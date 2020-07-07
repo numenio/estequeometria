@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace WPF_Estequeometría
+{
+    public enum tipoElemento {metal, nometal};
+    class Elemento
+    {
+        private string nombre = "";
+        private string simbolo = "";
+        private List<string> valencias;
+
+        public string Nombre { get => nombre; set => nombre = value; }
+        public string Simbolo { get => simbolo; set => simbolo = value; }
+        public List<string> Valencias { get => valencias; set => valencias = value; }
+
+        public Elemento(String nombreElemento, String simboloElemento, List<string> valenciasElemento)
+        {
+            nombre = nombreElemento;
+            simbolo = simboloElemento;
+            valencias = valenciasElemento;
+        }
+    }
+}
