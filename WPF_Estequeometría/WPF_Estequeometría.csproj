@@ -57,6 +57,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Elemento.cs" />
+    <Compile Include="ElementoEnUso.cs" />
+    <Compile Include="Molecula.cs" />
     <Compile Include="Lector_elementos.cs" />
     <Compile Include="voz.cs" />
     <Page Include="MainWindow.xaml">

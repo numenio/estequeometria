@@ -20,14 +20,12 @@ namespace WPF_Estequeometría
     /// </summary>
     public partial class MainWindow : Window
     {
-        private List<Elemento> metales = new List<Elemento>();
-        private List<Elemento> nometales = new List<Elemento>();
+        
         public MainWindow()
         {
             InitializeComponent();
             Voz.hablar("hola");
-            metales = new Lector_elementos().leerXML(tipoElemento.metal);
-            nometales = new Lector_elementos().leerXML(tipoElemento.nometal);
+            Molecula borrame = new Molecula(" 2  O 3Fe2 F", Molecula.tipoMolécula.oxido);
             Voz.hablar("lista de metales cargada");
         }
     }
