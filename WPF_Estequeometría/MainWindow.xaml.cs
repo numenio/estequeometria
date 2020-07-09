@@ -25,7 +25,10 @@ namespace WPF_Estequeometría
         {
             InitializeComponent();
             Voz.hablar("hola");
-            Molecula borrame = new Molecula(" 2  O 3Fe2 F", Molecula.tipoMolécula.oxido);
+            //Molecula borrame = new Molecula(" 2  O 3 3Cl24 ");
+            ElementoEnUso atomo = new ElementoEnUso("Aluminio", "Al", 4, true);
+            SumadorAtomos s = new SumadorAtomos(atomo);
+            //Molecula borrame2 = s.combinarElemconOxigeno();
             Voz.hablar("lista de metales cargada");
         }
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Markup;
 
 namespace WPF_Estequeometría
@@ -16,8 +17,8 @@ namespace WPF_Estequeometría
         string nombre = "";
         string cadenaMoléculaOrdenada = "";
         int cantidadMolecula = 1;
-        private List<Elemento> metales = new Lector_elementos().leerXML(tipoElemento.metal);
-        private List<Elemento> nometales = new Lector_elementos().leerXML(tipoElemento.nometal);
+        //string cadenaMoléculaSinSimplificar = "";
+        
 
         public List<ElementoEnUso> ElementosMolécula { get => elementosMolécula; }
         public tipoMolécula Tipo { get => tipo; }
@@ -25,16 +26,27 @@ namespace WPF_Estequeometría
         public string CadenaMolécula { get => cadenaMoléculaOrdenada; }
         public int CantidadMolécula { get => cantidadMolecula; }
 
+        //public string CadenaMoléculaOriginal { get => cadenaMoléculaSinSimplificar; }
+
+        private bool esCaracterValido (char c)
+        {
+            string caracteresValidos = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            if (caracteresValidos.Contains(c))
+                return true;
+            else
+                return false;
+        }
+
         private List<ElementoEnUso> separarElmentos (string cadenaFormula)
         {
             string auxcadena = "";
             List<string> auxElem = new List<string>();
             int auxPos = 0;
             bool swPrimerLetra = true;
-            foreach (char c in cadenaFormula) 
+            foreach (char c in cadenaFormula.Trim()) 
             {
                 auxPos++;
-                if (!char.IsWhiteSpace(c))
+                if (esCaracterValido(c))//!char.IsWhiteSpace(c))
                 {
                     
                     if (char.IsUpper(c) && !swPrimerLetra)
@@ -54,7 +66,7 @@ namespace WPF_Estequeometría
                     if (swPrimerLetra && !char.IsDigit(c) && !char.IsWhiteSpace(c))
                         swPrimerLetra = false;
 
-                    if (auxPos == cadenaFormula.Length)
+                    if (auxPos == cadenaFormula.Trim().Length)
                         auxElem.Add(auxcadena);
                     
                 }
@@ -70,12 +82,18 @@ namespace WPF_Estequeometría
                 string cadenaSimbolo = elem;
                 string cadenaNombre = "";
                 tipoElemento t = tipoElemento.noValido;
+                //char num;
+                int cont = 0;
 
-                char num = elem[elem.Length - 1]; //se busca la valencia usada
-                if (char.IsDigit(num))
+                foreach (char caract in elem)
+                    if (char.IsDigit(caract))
+                        cont++;
+
+                //num = elem.Substring(0, elem.Length - cont); //se busca la valencia usada
+                if (cont > 0)
                 {
-                    cantAtomos = int.Parse(num.ToString());
-                    cadenaSimbolo = elem.Substring(0, elem.Length - 1);
+                    cantAtomos = int.Parse(elem.Substring(elem.Length - cont, cont)); //int.Parse(num.ToString());
+                    cadenaSimbolo = elem.Substring(0, elem.Length - cont);
                 }
 
                 bool swEsElemVálido = false;
@@ -88,7 +106,7 @@ namespace WPF_Estequeometría
                 else
                 {
                     bool swEsMetal = false;
-                    foreach (Elemento e in metales) //se chequea si es metal válido
+                    foreach (Elemento e in new ListaMetales().Metales) //se chequea si es metal válido
                     {
                         if (e.Simbolo == cadenaSimbolo)
                         {
@@ -103,7 +121,7 @@ namespace WPF_Estequeometría
                     if (!swEsMetal) //si no es metal, vemos si es no metal
                     {
                         swEsElemVálido = false;
-                        foreach (Elemento e in nometales) //se chequea si es no metal válido
+                        foreach (Elemento e in new ListaNoMetales().Nometales) //se chequea si es no metal válido
                         {
                             if (e.Simbolo == cadenaSimbolo)
                             {
@@ -128,7 +146,31 @@ namespace WPF_Estequeometría
         private string deducirNombreMolecula (List<ElementoEnUso> elementosIntervienen)
         {
             string strNombreFormula = "";
+            switch (elementosIntervienen.Count)
+            {
+                case 0:
+                    return "Error, no hay átomos en la molécula";
+                case 2:
+                    foreach (ElementoEnUso e in elementosIntervienen)
+                    {
+                        if (e.TipodeAtomo == tipoElemento.metal)
+                        {
+                            // <---------- hacer función que nombre bien cada compuesto según átomo y valencia
+                            tipo = tipoMolécula.oxido;
+                            return "óxido de " + e.Nombre;
+                        }
 
+                        if (e.TipodeAtomo == tipoElemento.nometal)
+                        {
+                            // <---------- hacer función que nombre bien cada compuesto según átomo y valencia
+                            tipo = tipoMolécula.anhidrido;
+                            return "anhidrido de " + e.Nombre;
+                        }
+                    }
+                    break;
+                default:
+                    return "Error. Por ahora este programa sólo puede trabajar con dos átomos a la vez en óxidos y anhidridos";
+            }
 
             return strNombreFormula;
         }
@@ -138,27 +180,27 @@ namespace WPF_Estequeometría
             string cadenaOrdenada = "";
             foreach (ElementoEnUso e in elementosDeLaFormula)
             {
-                //if (e.SwEsValido && (e.TipodeAtomo == tipoElemento.metal || e.TipodeAtomo== tipoElemento.nometal))
-                //cadenaOrdenada = e.Nombre + e.CantAtomos.ToString() + cadenaOrdenada;
-
                 if (e.SwEsValido && e.TipodeAtomo == tipoElemento.oxigeno)
-                    cadenaOrdenada += e.Simbolo + e.CantAtomos.ToString();
+                    if (e.CantAtomos > 1)
+                        cadenaOrdenada += e.Simbolo + e.CantAtomos.ToString();
+                    else
+                        cadenaOrdenada += e.Simbolo;
                 else
+                    if (e.CantAtomos > 1)
                     cadenaOrdenada = e.Simbolo + e.CantAtomos.ToString() + cadenaOrdenada;
+                else
+                    cadenaOrdenada = e.Simbolo + cadenaOrdenada;
             }
 
             return cadenaOrdenada;
         }
 
-        //función para deducir tipo de fómula (más adelante)
 
-        public Molecula (string cadenaFormula, tipoMolécula tipoMolecula) //si se hace la función deducir tipo de formula este segundo parámetro no hace falta
-        {
+        public Molecula (string cadenaFormula)
+        { 
             elementosMolécula = separarElmentos(cadenaFormula);
-            tipo = tipoMolecula;
             nombre = deducirNombreMolecula(elementosMolécula);
             cadenaMoléculaOrdenada = ordenarCadenaMolécula(elementosMolécula);
-            //Voz.hablar("hola");
         }
 
         

@@ -58,8 +58,11 @@
     </ApplicationDefinition>
     <Compile Include="Elemento.cs" />
     <Compile Include="ElementoEnUso.cs" />
+    <Compile Include="ListaMetales.cs" />
+    <Compile Include="ListaNoMetales.cs" />
     <Compile Include="Molecula.cs" />
     <Compile Include="Lector_elementos.cs" />
+    <Compile Include="SumadorAtomos.cs" />
     <Compile Include="voz.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -101,7 +104,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="elementos.xml" />
+    <Resource Include="elementos.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
