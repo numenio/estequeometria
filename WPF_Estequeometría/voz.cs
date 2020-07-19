@@ -6,13 +6,21 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Speech.Synthesis;
+using System.Data.SqlClient;
 
 namespace WPF_Estequeometría
 {
     public class Voz
     {
         private static SpeechSynthesizer sintetizador = new SpeechSynthesizer();
+        //public int velocidadActual = sintetizador.Rate;
 
+        
+
+        public static int velocidadVozActual()
+        {
+            return sintetizador.Rate;
+        }
         public static void hablar(string texto)
         {
             sintetizador.Speak(texto);
@@ -23,6 +31,8 @@ namespace WPF_Estequeometría
             sintetizador.SpeakAsyncCancelAll();
             sintetizador.SpeakAsync(texto);
         }
+
+
 
         public static void callar()
         {
@@ -63,6 +73,7 @@ namespace WPF_Estequeometría
                 if (!listaIdiomaVoces.Contains(voz.VoiceInfo.Culture.Parent.DisplayName)) //si no está repetida se añade
                     listaIdiomaVoces.Add(voz.VoiceInfo.Culture.Parent.DisplayName);
             }
+            
             return listaIdiomaVoces;
         }
 
@@ -78,9 +89,16 @@ namespace WPF_Estequeometría
 
         public static void cambiarVelocidad(int valor)
         {
-            valor += -10;
+            //valor += -10;
             if (sintetizador.Rate + valor <= 10 && sintetizador.Rate + valor >= -10)
                 sintetizador.Rate = valor;
         }
+
+        public static string vozActual ()
+        {
+            return sintetizador.Voice.Name;
+        }
+
+        //public static 
     }
 }

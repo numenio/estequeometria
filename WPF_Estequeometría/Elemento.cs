@@ -23,5 +23,17 @@ namespace WPF_Estequeometría
             simbolo = simboloElemento;
             valencias = valenciasElemento;
         }
+
+        public bool EsDiatomico (ElementoEnUso el)
+        {
+            switch(el.Simbolo)
+            {
+                case "S":
+                case "O":
+                    return true;
+                default:
+                    return false;
+            }    
+        }
     }
 }

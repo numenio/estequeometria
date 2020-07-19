@@ -31,11 +31,10 @@ namespace WPF_Estequeometría
             registroSimplificación = cargarRegistroAccionesSimplificación();
         }
 
-        //public Molecula combinarElemconOxigeno ()
-        //{
-        //    Molecula result = simplificarMolecula(new Molecula(ele.Simbolo + oxigeno.CantAtomos + oxigeno.Simbolo + ele.CantAtomos));
-        //    return result;
-        //}
+        public SumadorAtomos()
+        {
+            
+        }
 
         private string cargarRegistroAccionesSimplificación ()
         {
@@ -76,19 +75,6 @@ namespace WPF_Estequeometría
 
             listaCantAtomosSimplificados = simplificarLista(listaCantAtomosOriginales);
             
-            //registroSimplificación += " como";
-            //foreach (ElementoEnUso e in m.ElementosMolécula) //se carga en la cadena cada átomo
-            //{
-
-            //    registroSimplificación += " el " + e.Nombre + " tiene " + listaCantAtomosOriginales[cont] +
-            //        " átomos ";
-            //    cont++;
-            //    if (cont != m.ElementosMolécula.Count) //si no es el último elemento de la lista se agrega el y
-            //        registroSimplificación += " y ";
-            //}
-
-            
-
             string auxCadenaMolecula = "";
             cont = 0;
             foreach (ElementoEnUso e in m.ElementosMolécula)
@@ -96,13 +82,6 @@ namespace WPF_Estequeometría
                 auxCadenaMolecula += e.Simbolo + listaCantAtomosSimplificados[cont]; 
                 cont++;
             }
-
-            //if (!listaCantAtomosOriginales.SequenceEqual(listaCantAtomosSimplificados)) //si hubo simplificación
-            //    registroSimplificación += " se pueden simplificar entre sí. Por lo que la fórmula entonces queda ";
-            //else
-            //    registroSimplificación += " no se pueden simplificar entre sí. Por lo que la fórmula entonces queda sin simplificar, igual que antes, osea ";
-
-            //registroSimplificación += auxCadenaMolecula;
 
             return new Molecula(auxCadenaMolecula);
         }
@@ -152,6 +131,35 @@ namespace WPF_Estequeometría
             }
 
             return listaSimplificada;
+        }
+
+        public ElementoEnUso elegirAtomoAleatorio()
+        {
+            ListaMetales listamet = new ListaMetales();
+            ListaNoMetales listanomet = new ListaNoMetales();
+            Random rnd = new Random();
+            int cantMetales = listamet.Metales.Count;
+            int cantNoMetales = listanomet.Nometales.Count;
+            Elemento el;
+            int valenciaAleatoria = 1;
+
+            int i = rnd.Next(cantMetales + cantNoMetales);
+
+            if (i >= cantMetales) //como se suman las listas de metales y no metales, si el número es superior al total de metales, quiere decir que es no metal
+            {
+                i -= cantMetales; //se resta la lista de los metales
+                el = listanomet.Nometales[i];
+            }
+            else
+            {
+                el = listamet.Metales[i];
+            }
+
+            i = rnd.Next(el.Valencias.Count);
+            valenciaAleatoria = int.Parse(el.Valencias[i]);
+
+            return new ElementoEnUso(el.Nombre, el.Simbolo, valenciaAleatoria, true);
+
         }
     }
 }
