@@ -59,5 +59,37 @@ namespace WPF_Estequeometría.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a &lt;?xml version=&apos;1.0&apos; encoding=&apos;UTF-8&apos; standalone=&apos;yes&apos; ?&gt;
+        ///&lt;!--Archivo para el soft de práctica de estequeometría para ciegos--&gt;
+        ///&lt;elementos&gt;
+        ///	&lt;metales&gt; 
+        ///	  &lt;metal&gt;
+        ///	  &lt;nombre&gt;&quot;Litio&quot;&lt;/nombre&gt;
+        ///	  &lt;simbolo&gt;&quot;Li&quot;&lt;/simbolo&gt;
+        ///	  &lt;valencias&gt;
+        ///		&lt;valor&gt;&quot;1&quot;&lt;/valor&gt;
+        ///	  &lt;/valencias&gt;
+        ///	  &lt;/metal&gt;
+        ///	  
+        ///	  &lt;metal&gt;
+        ///	  &lt;nombre&gt;&quot;Sodio&quot;&lt;/nombre&gt;
+        ///	  &lt;simbolo&gt;&quot;Na&quot;&lt;/simbolo&gt;
+        ///	  &lt;valencias&gt;
+        ///		&lt;valor&gt;&quot;1&quot;&lt;/valor&gt;
+        ///	  &lt;/valencias&gt;
+        ///	  &lt;/metal&gt;
+        ///	 
+        ///	 &lt;metal&gt;
+        ///	 &lt;nombre&gt;&quot;Potasio&quot;&lt;/nombre&gt;
+        ///	  &lt;simbolo&gt;&quot;K&quot;&lt;/simbolo&gt;
+        ///	  &lt;va [resto de la cadena truncado]&quot;;.
+        /// </summary>
+        internal static string elementos {
+            get {
+                return ResourceManager.GetString("elementos", resourceCulture);
+            }
+        }
     }
 }

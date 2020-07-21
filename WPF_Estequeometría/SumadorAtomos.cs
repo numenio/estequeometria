@@ -12,9 +12,10 @@ namespace WPF_Estequeometría
         private ElementoEnUso ele;
         private ElementoEnUso oxigeno = new ElementoEnUso("Oxígeno", "O", 2, true);
         List<int> primos = new List<int>();
-        string registroSimplificación = "";
+        public string registroSimplificación = "";
         public Molecula molOriginal; //sin la simplificaci{on
         public Molecula molFinal; //con la simplificación
+        public bool swTieneQSimplificar = false;
 
         public SumadorAtomos(ElementoEnUso e)
         {
@@ -46,7 +47,7 @@ namespace WPF_Estequeometría
             foreach (ElementoEnUso e in molOriginal.ElementosMolécula) //se carga en la cadena cada átomo
             {
 
-                cadena += " el " + e.Nombre + " tiene " + e.CantAtomos +
+                cadena += " el elemento " + e.Nombre + " tiene " + e.CantAtomos +
                     " átomos ";
                 cont++;
                 if (cont != molOriginal.ElementosMolécula.Count) //si no es el último elemento de la lista se agrega el y
@@ -54,9 +55,15 @@ namespace WPF_Estequeometría
             }
 
             if (!molOriginal.CadenaMolécula.Equals(molFinal.CadenaMolécula)) //si hubo simplificación
+            {
                 cadena += " se pueden simplificar entre sí. Por lo que la fórmula entonces queda ";
+                swTieneQSimplificar = true;
+            }
             else
+            {
                 cadena += " no se pueden simplificar entre sí. Por lo que la fórmula entonces queda sin simplificar, igual que antes, osea ";
+                swTieneQSimplificar = false;
+            }
 
             cadena += molFinal.CadenaMolécula; //se añade al final la molécula completa
 

@@ -46,7 +46,7 @@ namespace WPF_Estequeometría
                 case tipoMolécula.noValida:
                     break;
             }
-            txtInfo.Text = "Enter: Revisa la fórmula escrita. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz.\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
+            txtInfo.Text = "Enter: Revisa la fórmula escrita. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz. Escape: volver\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
             txtPedido.Text = "Tenés que escribir la fórmula sin estequeometría del " + aux + " que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
             txtFormula.Focus();
             Voz.hablarAsync("En este tipo de ejercicio " + txtPedido.Text + ". Sólo tenés que escribir los átomos que se suman, y el " + aux + " resultado");
@@ -143,8 +143,9 @@ namespace WPF_Estequeometría
             if (e.Key == Key.F7)
             {
                 int pos = voces.IndexOf(Voz.vozActual());
-                if (pos > voces.Count - 1) pos = 0;
-                Voz.cambiarVoz(voces[pos + 1]);
+                if (pos >= voces.Count - 1) pos = -1;
+                pos++;
+                Voz.cambiarVoz(voces[pos]);
                 Voz.hablarAsync("elegiste mi voz para hablarte");
                 return;
             }

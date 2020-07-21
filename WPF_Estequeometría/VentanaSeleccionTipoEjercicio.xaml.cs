@@ -20,7 +20,7 @@ namespace WPF_Estequeometría
     public partial class VentanaSeleccionTipoEjercicio : Window
     {
         tipoMolécula tipoMoleculaResultado = tipoMolécula.oxido;
-        string aux = "";
+        //string aux = "";
 
         public bool swVolviendo { get; set; }
 
@@ -33,12 +33,15 @@ namespace WPF_Estequeometría
                 this.Close();
                 return;
             }
+
+            Voz.cambiarVoz(Voz.listarVocesPorIdioma("Español")[0]);
+
             txtInfo.Text = "Autor: Guillermo Tosccani (guillermo.toscani@gmail.com";
             List<string> listaEjercicios = new List<string>();
             switch (tipoMoleculaResultado)
             {
                 case tipoMolécula.oxido:
-                    aux = "óxidos o anhidridos";
+                    //aux = "óxidos o anhidridos";
                     listaEjercicios.Add("Practicar sólo hacer óxidos o anhidridos");
                     listaEjercicios.Add("Practicar escribir una fórmula sin estequeometría");
                     listaEjercicios.Add("Practicar sólo la estequeometría de una fórmula");
@@ -138,7 +141,7 @@ namespace WPF_Estequeometría
             if (swVolviendo)
                 Voz.hablarAsync("Volviendo a la lista de ejercicios. Elegí con flecha abajo qué tipo querés hacer y aceptá con enter");
             else
-                Voz.hablarAsync("Bienvenida o bienvenido a este programa para practicar fórmulas químicas. Por ahora sólo se puede practicar hacer óxidos o anhidridos. Elegí con las flechas y aceptá con enter el tipo de ejercicio de " + aux + " que querés hacer");
+                Voz.hablarAsync("Bienvenida o bienvenido a este programa para practicar óxidos y anhidridos. Elegí con las flechas y aceptá con enter el tipo de ejercicio de que querés hacer");
         }
     }
 }

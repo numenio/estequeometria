@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_Estequeometría"
         mc:Ignorable="d"
-        Title="Química" Height="450" Width="800" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" Loaded="Window_Loaded" Icon="iconoQuimica.bmp">
+        Title="Química" Height="450" Width="800" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" Loaded="Window_Loaded" Icon="icono.jpg">
     <Grid>
         <ListBox x:Name="listEjercicios" HorizontalAlignment="Left" Height="219" Margin="47,58,0,0" VerticalAlignment="Top" Width="704" FontSize="20" MouseDoubleClick="listEjercicios_MouseDoubleClick"/>
         <Label Content="Elegir tipo de ejercicio:" HorizontalAlignment="Left" Margin="220,18,0,0" VerticalAlignment="Top" FontSize="24"/>

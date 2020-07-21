@@ -41,13 +41,14 @@ namespace WPF_Estequeometría
         private List<ElementoEnUso> separarElmentos(string cadenaFormula)
         {
             string auxcadena = "";
+            string auxCantMol = "";
             List<string> auxElem = new List<string>();
             int auxPos = 0;
             bool swPrimerLetra = true;
             foreach (char c in cadenaFormula.Trim())
             {
                 auxPos++;
-                if (new ValidadorCadenas().esCaracterValido(c))
+                if (new ValidadorCadenas().esCaracterValido(c, false))
                 {
 
                     if (char.IsUpper(c) && !swPrimerLetra)
@@ -59,7 +60,7 @@ namespace WPF_Estequeometría
                     }
                     if (swPrimerLetra && char.IsDigit(c))
                     {
-                        cantidadMolecula = int.Parse(c.ToString());
+                        auxCantMol += c;
                     }
                     else
                         auxcadena += c;
@@ -69,6 +70,10 @@ namespace WPF_Estequeometría
 
                     if (auxPos == cadenaFormula.Trim().Length)
                         auxElem.Add(auxcadena);
+
+                    if (!swPrimerLetra) //si se alcanza la primer letra
+                        if (auxCantMol != "")
+                            cantidadMolecula = int.Parse(auxCantMol);
 
                 }
             }
@@ -220,7 +225,7 @@ namespace WPF_Estequeometría
                 foreach (char c in cadenaMolecula.Trim())
                 {
                     auxPos++;
-                    if (new ValidadorCadenas().esCaracterValido(c))
+                    if (new ValidadorCadenas().esCaracterValido(c, false))
                     {
 
                         if (char.IsUpper(c) && !swPrimerLetra)
@@ -244,6 +249,8 @@ namespace WPF_Estequeometría
                             auxElem.Add(auxcadena);
 
                     }
+                    else
+                        return false;
                 }
 
 

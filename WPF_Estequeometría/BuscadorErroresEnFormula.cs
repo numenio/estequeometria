@@ -27,7 +27,8 @@ namespace WPF_Estequeometría
             mResultaEnApp = molBienResuelta;
             formulaEnviada = formula;
             tipoErrorEnFormula = chequearTipoError();
-            cadenaExplicacionError = hacerCadenaDevolSegunError(tipoErrorEnFormula);
+            if (tipoErrorEnFormula != tipoError.estequeometriaIncorrecta) //si es error de estequeometría lo cargamos en la misma función de esteq
+                cadenaExplicacionError = hacerCadenaDevolSegunError(tipoErrorEnFormula);
         }
 
         //public BuscadorErroresEnFormula(Molecula molEnviada, Molecula molBienResuelta)
@@ -219,7 +220,7 @@ namespace WPF_Estequeometría
         private bool chequearCaracteresNoPermitidos()
         {
             bool swHayError = false;
-            if (!new ValidadorCadenas().esCadenaValida(new ValidadorCadenas().quitarEspaciosEncadena(formulaEnviada.cadenaFormulaEnviada)))
+            if (!new ValidadorCadenas().esCadenaValida(new ValidadorCadenas().quitarEspaciosEncadena(formulaEnviada.cadenaFormulaEnviada), false))
                 swHayError = true;
 
             return swHayError;
@@ -242,7 +243,7 @@ namespace WPF_Estequeometría
                     cadena = "Escribiste mal los átomos que estás sumando, hay escritos átomos incorrectos a los pedidos antes de la fórmula del resultado";
                     break;
                 case tipoError.valenciasIncorrectasEnAntecedentes:
-                    cadena = "Escribiste mal las valencias de los átomos que estás sumando, acordate que el elemento metal o no metal va sin ningún subíndice excepto que sea diatómico, y a eso se le suma el oxígeno, que siempre tiene subíndice 2 porque él sí es diatómico";
+                    cadena = "Escribiste mal las valencias de los átomos que estás sumando, acordate que el elemento metal o no metal va sin ningún subíndice excepto que sea diatómico, y a eso se le suma el oxígeno, al que siempre se le escribe subíndice 2 porque él sí es diatómico";
                     break;
                 case tipoError.estequeometriaIncorrecta:
                     //cadena = "Está mal la estequeometría de la operación. La fórmula escrita está bien tanto en los átomos que se están sumando como en la molécula resultado, pero no está bien equilibrada";

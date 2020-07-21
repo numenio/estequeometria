@@ -28,12 +28,19 @@ namespace WPF_Estequeometría
         {
             InitializeComponent();
 
-            atomoSeleccionadoParaElUsuario = new SumadorAtomos().elegirAtomoAleatorio();
+            try
+            {
+                atomoSeleccionadoParaElUsuario = new SumadorAtomos().elegirAtomoAleatorio();
 
-            txtInfo.Text = "Enter: Revisa la fórmula escrita. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz.\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
-            txtPedido.Text = "Tenés que escribir sólo el óxido o anhidrido que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
-            txtFormula.Focus();
-            Voz.hablarAsync(txtPedido.Text + ". En este ejercicio no tenés que escribir los átomos que se suman, sólo el óxido o anhidrido resultado");
+                txtInfo.Text = "Enter: Revisa la fórmula escrita. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz. Escape: volver\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
+                txtPedido.Text = "Tenés que escribir sólo el óxido o anhidrido que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
+                txtFormula.Focus();
+                Voz.hablarAsync(txtPedido.Text + ". En este ejercicio no tenés que escribir los átomos que se suman, sólo el óxido o anhidrido resultado");
+            } 
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + "\n"+ ex.StackTrace);
+            }
         }
 
         private void txtFormula_KeyUp(object sender, KeyEventArgs e)
@@ -134,8 +141,9 @@ namespace WPF_Estequeometría
             if (e.Key == Key.F7)
             {
                 int pos = voces.IndexOf(Voz.vozActual());
-                if (pos > voces.Count - 1) pos = 0;
-                Voz.cambiarVoz(voces[pos + 1]);
+                if (pos >= voces.Count - 1) pos = -1;
+                pos++;
+                Voz.cambiarVoz(voces[pos]);
                 Voz.hablarAsync("elegiste mi voz para hablarte");
                 return;
             }
@@ -243,9 +251,20 @@ namespace WPF_Estequeometría
 
 
                     if (!c.swMoleculaBienResulta)
-                        cadena = "Error. Revisá la molécula que escribiste. Recordá que apretando F1 se lee de nuevo el ejercicio a realizar.";
+                    {
+                        SumadorAtomos s = new SumadorAtomos(atomoSeleccionadoParaElUsuario);
+                        if (s.molOriginal.CadenaMolécula == new ValidadorCadenas().validarCadena(txtFormula.Text, false)) //si escribió bien la fórmula pero sólo le faltó simplificar
+                            cadena = "Error, faltó simplificar. " + c.cadenaSimplificacion;
+                        else
+                            cadena = "Error. Revisá la molécula que escribiste. Recordá que apretando F1 se lee de nuevo el ejercicio a realizar.";
+                    }
                     else
-                        cadena = "Todo está perfecto. Felicitaciones! Ahora podés apretar F2 para hacer un nuevo ejercicio o ESCAPE para volver al menú inicial.";
+                    {
+                        if (m.CantidadMolécula != 1)
+                            cadena = "Error. Escribiste un número antes del óxido o anhidrido. Este ejercicio es sólo para practicar el óxido o anhidrido final, no la estequeometría.";
+                        else
+                            cadena = "Todo está perfecto. Felicitaciones! Ahora podés apretar F2 para hacer un nuevo ejercicio o ESCAPE para volver al menú inicial.";
+                    }
                 }
                 else
                 {

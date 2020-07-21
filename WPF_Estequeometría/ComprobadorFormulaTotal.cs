@@ -27,7 +27,10 @@ namespace WPF_Estequeometría
                     }
             }
             else
+            {
                 swFormulaBienHecha = false;
+                cadenaError = "Error. Revisá lo que escribiste porque no es una fórmula válida";
+            }
         }
     }
 }

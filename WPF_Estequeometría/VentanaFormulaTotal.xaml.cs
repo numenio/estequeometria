@@ -29,7 +29,7 @@ namespace WPF_Estequeometría
             //ElementoEnUso atomo = new ElementoEnUso("Azufre", "S", 4, true);
             atomoSeleccionadoParaElUsuario = new SumadorAtomos().elegirAtomoAleatorio();
 
-            txtInfo.Text = "Enter: Revisa la fórmula escrita. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz.\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
+            txtInfo.Text = "Enter: Revisa la fórmula escrita. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz. Escape: volver\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
             txtPedido.Text = "Tenés que usar el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString() + " para hacer la fórmula completa";
             txtFormula.Focus();
             Voz.hablarAsync("Este es el ejercicio más difícil. Aquí " + txtPedido.Text + ". Acordate de poner los átomos que suman, el resultado, y la estequeometría");
@@ -173,8 +173,9 @@ namespace WPF_Estequeometría
             if (e.Key == Key.F7)
             {
                 int pos = voces.IndexOf(Voz.vozActual());
-                if (pos > voces.Count - 1) pos = 0;
-                Voz.cambiarVoz(voces[pos + 1]);
+                if (pos >= voces.Count - 1) pos = -1;
+                pos++;
+                Voz.cambiarVoz(voces[pos]);
                 Voz.hablarAsync("elegiste mi voz para hablarte");
                 return;
             }

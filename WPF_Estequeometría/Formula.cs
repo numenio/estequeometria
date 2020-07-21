@@ -18,8 +18,8 @@ namespace WPF_Estequeometría
         public Formula(string formulaEnviada)
         {
             cadenaFormulaEnviada = formulaEnviada;
-            cadenaFormulaMejorada = new ValidadorCadenas().validarCadena(cadenaFormulaEnviada);
-            // <------- hacer función que valide la fórmula enviada
+            cadenaFormulaMejorada = new ValidadorCadenas().quitarEspaciosEncadena(cadenaFormulaEnviada); //new ValidadorCadenas().validarCadena(cadenaFormulaEnviada, false);
+            
             if (esFormulaValida(cadenaFormulaMejorada))
             {
                 atomosEnFormula = separarAtomosenFormula(cadenaFormulaMejorada);
@@ -48,7 +48,7 @@ namespace WPF_Estequeometría
             string aux = formula.Substring(formula.IndexOf('=')+1).Trim();
             string auxcadenaFormula = "";
 
-            auxcadenaFormula = new ValidadorCadenas().validarCadena(aux); //se quitan todos los caracteres que no sean válidos
+            auxcadenaFormula = new ValidadorCadenas().validarCadena(aux, false); //se quitan todos los caracteres que no sean válidos
 
             return new Molecula(auxcadenaFormula);
         }
@@ -56,7 +56,7 @@ namespace WPF_Estequeometría
         private bool esFormulaValida (string formula) 
         {
             formula = new ValidadorCadenas().quitarEspaciosEncadena(formula);
-            if (new ValidadorCadenas().esCadenaValida(formula)) //si los caracteres son válidos
+            if (new ValidadorCadenas().esCadenaValida(formula, false)) //si los caracteres son válidos
                 if (formula.Contains('+')) //tiene dos elementos que se suman
                     if (formula.Contains('=')) //tiene un igual
                         if (formula.IndexOf('+') < formula.IndexOf('=')) //y el signo + está antes que el =

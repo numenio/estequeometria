@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace WPF_Estequeometría
 {
@@ -17,13 +18,14 @@ namespace WPF_Estequeometría
             List<Elemento> elementosABuscar = new List<Elemento>();
 
             XmlDocument xDoc = new XmlDocument();
+            //XDocument xDoc = XDocument.Parse(Properties.Resources.elementos);
 
             //La ruta del documento XML permite rutas relativas 
             //respecto del ejecutable!
             XmlNodeList lista;
             XmlNodeList auxLista;
 
-            xDoc.Load("elementos.xml");
+            xDoc.LoadXml(Properties.Resources.elementos);//"elementos.xml");
 
             if (tipo == tipoElemento.metal)
             {

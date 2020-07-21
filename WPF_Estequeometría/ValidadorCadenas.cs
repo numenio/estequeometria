@@ -9,32 +9,36 @@ namespace WPF_Estequeometría
 {
     class ValidadorCadenas
     {
-        public bool esCaracterValido(char c)
+        public bool esCaracterValido(char c, bool swIncluirEspacios)
         {
             string caracteresValidos = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+=";
+            if (swIncluirEspacios)
+                caracteresValidos += " ";
+            
             if (caracteresValidos.Contains(c))
                 return true;
             else
                 return false;
+            
         }
 
-        public bool esCadenaValida(string cadenaValida)
+        public bool esCadenaValida(string cadenaValida, bool swIncluirEspacios)
         {
             //bool swEsCadenaValida = true;
 
             foreach (char c in cadenaValida) //se quitan todos los caracteres que no sean válidos
-                if (!new ValidadorCadenas().esCaracterValido(c))
+                if (!new ValidadorCadenas().esCaracterValido(c, swIncluirEspacios))
                     return false;
 
             return true;
         }
 
-        public string validarCadena (string cadenaAvalidar)
+        public string validarCadena (string cadenaAvalidar, bool swIncluirEspacios)
         {
             string auxcadenaValidada = "";
 
             foreach (char c in cadenaAvalidar) //se quitan todos los caracteres que no sean válidos
-                if (new ValidadorCadenas().esCaracterValido(c))
+                if (new ValidadorCadenas().esCaracterValido(c, swIncluirEspacios))
                     auxcadenaValidada += c;
 
             return auxcadenaValidada;

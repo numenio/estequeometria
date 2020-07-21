@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_Estequeometría"
         mc:Ignorable="d"
-        Title="Química" Height="450" Width="800" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" PreviewKeyDown="Window_PreviewKeyDown" Icon="iconoQuimica.bmp">
+        Title="Química" Height="450" Width="800" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" PreviewKeyDown="Window_PreviewKeyDown" Icon="icono.jpg">
     <Grid>
         <TextBox x:Name="txtFormula" HorizontalAlignment="Left" Height="56" Margin="140,139,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="505" FontSize="36"/>
         <TextBlock x:Name="txtResultado" HorizontalAlignment="Left" Margin="36,205,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="127" Width="709" FontSize="20"/>

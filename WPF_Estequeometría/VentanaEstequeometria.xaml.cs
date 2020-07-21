@@ -52,7 +52,7 @@ namespace WPF_Estequeometría
                 case tipoMolécula.noValida:
                     break;
             }
-            txtInfo.Text = "Enter: Revisa la fórmula escrita. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz.\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
+            txtInfo.Text = "Enter: Revisa la fórmula escrita. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz. Escape: volver\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
             txtPedido.Text = "Tenés que hacer sólo la estequeometría del " + aux + " que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
             txtFormula.Text = formula;
             txtFormula.Focus();
@@ -150,6 +150,7 @@ namespace WPF_Estequeometría
             }
         }
 
+
         private int traducirKeyANumero(KeyEventArgs e)
         {
             switch (e.Key)
@@ -198,58 +199,7 @@ namespace WPF_Estequeometría
                     return 0;
             }
 
-            //case Key.A:
-            //    break;
-            //case Key.B:
-            //    break;
-            //case Key.C:
-            //    break;
-            //case Key.D:
-            //    break;
-            //case Key.E:
-            //    break;
-            //case Key.F:
-            //    break;
-            //case Key.G:
-            //    break;
-            //case Key.H:
-            //    break;
-            //case Key.I:
-            //    break;
-            //case Key.J:
-            //    break;
-            //case Key.K:
-            //    break;
-            //case Key.L:
-            //    break;
-            //case Key.M:
-            //    break;
-            //case Key.N:
-            //    break;
-            //case Key.O:
-            //    break;
-            //case Key.P:
-            //    break;
-            //case Key.Q:
-            //    break;
-            //case Key.R:
-            //    break;
-            //case Key.S:
-            //    break;
-            //case Key.T:
-            //    break;
-            //case Key.U:
-            //    break;
-            //case Key.V:
-            //    break;
-            //case Key.W:
-            //    break;
-            //case Key.X:
-            //    break;
-            //case Key.Y:
-            //    break;
-            //case Key.Z:
-
+            
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -370,7 +320,7 @@ namespace WPF_Estequeometría
                 
                 formula += "+O2=" + new SumadorAtomos(atomoSeleccionadoParaElUsuario).molFinal.CadenaMolécula;
 
-                txtPedido.Text = "Tenés que hacer sólo la estequeometría del óxido o ahidrido que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
+                txtPedido.Text = "Tenés que hacer sólo la estequeometría del óxido o anhidrido que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
                 txtFormula.Text = formula;
                 txtResultado.Text = "";
                 txtFormula.Focus();
@@ -450,8 +400,9 @@ namespace WPF_Estequeometría
             if (e.Key == Key.F7)
             {
                 int pos = voces.IndexOf(Voz.vozActual());
-                if (pos > voces.Count - 1) pos = 0;
-                Voz.cambiarVoz(voces[pos + 1]);
+                if (pos >= voces.Count - 1) pos = -1;
+                pos++;
+                Voz.cambiarVoz(voces[pos]);
                 Voz.hablarAsync("elegiste mi voz para hablarte");
                 return;
             }
@@ -548,19 +499,21 @@ namespace WPF_Estequeometría
 
                     if (f.molEnviadaenResult.CantidadMolécula != 1)
                         swEscribioEstequeometria = true;
+
+
+                    int atomosAntecedentes = 0;
+                    int atomosMoleculaFinal = 0;
+
+
+                    foreach (Molecula mol in f.atomosEnFormula)
+                        foreach (ElementoEnUso el in mol.ElementosMolécula)
+                            atomosAntecedentes += mol.CantidadMolécula * el.CantAtomos;
+
+
+                    foreach (ElementoEnUso el in f.molEnviadaenResult.ElementosMolécula)
+                        atomosMoleculaFinal += f.molEnviadaenResult.CantidadMolécula * el.CantAtomos;
+
                 }
-
-                int atomosAntecedentes = 0;
-                int atomosMoleculaFinal = 0;
-
-
-                foreach (Molecula mol in f.atomosEnFormula)
-                    foreach (ElementoEnUso el in mol.ElementosMolécula)
-                        atomosAntecedentes += mol.CantidadMolécula * el.CantAtomos;
-
-
-                foreach (ElementoEnUso el in f.molEnviadaenResult.ElementosMolécula)
-                    atomosMoleculaFinal += f.molEnviadaenResult.CantidadMolécula * el.CantAtomos;
 
                 string cadena = "";
                 ComprobadorFormulaTotal compr = new ComprobadorFormulaTotal(f, atomoSeleccionadoParaElUsuario, tipoMolécula.oxido, true);
