@@ -431,6 +431,12 @@ namespace WPF_Estequeometría
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                e.Handled = true;
+                return;
+            }
+
             if (e.Key == Key.Delete)
             {
                 Voz.hablarAsync("no se puede usar la tecla suprimir");
