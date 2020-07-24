@@ -74,6 +74,7 @@
     <Compile Include="ListaNoMetales.cs" />
     <Compile Include="Molecula.cs" />
     <Compile Include="Lector_elementos.cs" />
+    <Compile Include="RandomizadorElementos.cs" />
     <Compile Include="SumadorAtomos.cs" />
     <Compile Include="ValidadorCadenas.cs" />
     <Compile Include="VentanaEstequeometria.xaml.cs">

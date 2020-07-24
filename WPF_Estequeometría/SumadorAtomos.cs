@@ -140,33 +140,6 @@ namespace WPF_Estequeometría
             return listaSimplificada;
         }
 
-        public ElementoEnUso elegirAtomoAleatorio()
-        {
-            ListaMetales listamet = new ListaMetales();
-            ListaNoMetales listanomet = new ListaNoMetales();
-            Random rnd = new Random();
-            int cantMetales = listamet.Metales.Count;
-            int cantNoMetales = listanomet.Nometales.Count;
-            Elemento el;
-            int valenciaAleatoria = 1;
-
-            int i = rnd.Next(cantMetales + cantNoMetales);
-
-            if (i >= cantMetales) //como se suman las listas de metales y no metales, si el número es superior al total de metales, quiere decir que es no metal
-            {
-                i -= cantMetales; //se resta la lista de los metales
-                el = listanomet.Nometales[i];
-            }
-            else
-            {
-                el = listamet.Metales[i];
-            }
-
-            i = rnd.Next(el.Valencias.Count);
-            valenciaAleatoria = int.Parse(el.Valencias[i]);
-
-            return new ElementoEnUso(el.Nombre, el.Simbolo, valenciaAleatoria, true);
-
-        }
+        
     }
 }

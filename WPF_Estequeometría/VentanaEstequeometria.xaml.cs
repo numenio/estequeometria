@@ -23,13 +23,16 @@ namespace WPF_Estequeometría
         List<string> voces = Voz.listarVocesPorIdioma("Español");
         bool swSeManejoElEventoEnWindowKeyDown = false;
         List<int> listaPosicionesPermitidasParaBorrar = new List<int>();
+        RandomizadorElementos ran = new RandomizadorElementos();
+
+
         public VentanaEstequeometria(tipoMolécula t)
         {
             InitializeComponent();
 
 
             string aux = "";
-            atomoSeleccionadoParaElUsuario = new SumadorAtomos().elegirAtomoAleatorio();
+            atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
             string formula = atomoSeleccionadoParaElUsuario.Simbolo;
             if (new ValidadorCadenas().EsDiatomico(atomoSeleccionadoParaElUsuario))
                 formula += "2";
@@ -313,7 +316,7 @@ namespace WPF_Estequeometría
 
             if (e.Key == Key.F2) //F2 cambia el átomo y la valencia a resolver
             {
-                atomoSeleccionadoParaElUsuario = new SumadorAtomos().elegirAtomoAleatorio();
+                atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
                 string formula = atomoSeleccionadoParaElUsuario.Simbolo;
                 if (new ValidadorCadenas().EsDiatomico(atomoSeleccionadoParaElUsuario))
                     formula += "2";
@@ -428,7 +431,11 @@ namespace WPF_Estequeometría
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
        {
-            
+            if (e.Key == Key.Delete)
+            {
+                Voz.hablarAsync("no se puede usar la tecla suprimir");
+                e.Handled = true;
+            }
 
             if (e.Key == Key.Back)
             {

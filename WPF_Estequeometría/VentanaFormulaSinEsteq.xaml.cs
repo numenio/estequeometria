@@ -22,13 +22,15 @@ namespace WPF_Estequeometría
         ElementoEnUso atomoSeleccionadoParaElUsuario;
         List<string> voces = Voz.listarVocesPorIdioma("Español");
         bool swSeManejoElEventoEnWindowKeyDown = false;
+        RandomizadorElementos ran = new RandomizadorElementos();
+
 
         public VentanaFormulaSinEsteq(tipoMolécula t)
         {
             InitializeComponent();
 
             string aux = "";
-            atomoSeleccionadoParaElUsuario = new SumadorAtomos().elegirAtomoAleatorio();
+            atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
 
             switch (t)
             {
@@ -63,7 +65,7 @@ namespace WPF_Estequeometría
 
             if (e.Key == Key.F2) //F2 cambia el átomo y la valencia a resolver
             {
-                atomoSeleccionadoParaElUsuario = new SumadorAtomos().elegirAtomoAleatorio();
+                atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
 
                 txtPedido.Text = "Tenés que escribir la fórmula sin estequeometría del óxido o ahidrido que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
                 txtFormula.Text = "";
@@ -215,6 +217,12 @@ namespace WPF_Estequeometría
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            if (e.Key == Key.Delete)
+            {
+                Voz.hablarAsync("no se puede usar la tecla suprimir");
+                e.Handled = true;
+            }
+
             if (e.Key == Key.Back)
             {
                 swSeManejoElEventoEnWindowKeyDown = true;

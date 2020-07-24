@@ -22,12 +22,14 @@ namespace WPF_Estequeometría
         ElementoEnUso atomoSeleccionadoParaElUsuario;
         List<string> voces = Voz.listarVocesPorIdioma("Español");
         bool swSeManejoElEventoEnWindow = false;
+        RandomizadorElementos ran = new RandomizadorElementos();
+
 
         public VentanaFormulaTotal(tipoMolécula t)
         {
             InitializeComponent();
             //ElementoEnUso atomo = new ElementoEnUso("Azufre", "S", 4, true);
-            atomoSeleccionadoParaElUsuario = new SumadorAtomos().elegirAtomoAleatorio();
+            atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
 
             txtInfo.Text = "Enter: Revisa la fórmula escrita. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz. Escape: volver\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
             txtPedido.Text = "Tenés que usar el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString() + " para hacer la fórmula completa";
@@ -93,7 +95,7 @@ namespace WPF_Estequeometría
 
             if (e.Key == Key.F2) //F2 cambia el átomo y la valencia a resolver
             {
-                atomoSeleccionadoParaElUsuario = new SumadorAtomos().elegirAtomoAleatorio();
+                atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
 
                 txtPedido.Text = "Tenés que escribir la fórmula usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
                 txtFormula.Text = "";
@@ -228,6 +230,12 @@ namespace WPF_Estequeometría
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            if (e.Key == Key.Delete)
+            {
+                Voz.hablarAsync("no se puede usar la tecla suprimir");
+                e.Handled = true;
+            }
+
             if (e.Key == Key.Back)
             {
                 int pos = txtFormula.SelectionStart;

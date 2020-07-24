@@ -21,8 +21,8 @@ namespace WPF_Estequeometría
     {
         ElementoEnUso atomoSeleccionadoParaElUsuario;
         List<string> voces = Voz.listarVocesPorIdioma("Español");
-        bool swSeManejoElEventoEnWindow = false; 
-
+        bool swSeManejoElEventoEnWindow = false;
+        RandomizadorElementos ran = new RandomizadorElementos();
 
         public VentanaSoloResultado(tipoMolécula t)
         {
@@ -30,7 +30,7 @@ namespace WPF_Estequeometría
 
             try
             {
-                atomoSeleccionadoParaElUsuario = new SumadorAtomos().elegirAtomoAleatorio();
+                atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
 
                 txtInfo.Text = "Enter: Revisa la fórmula escrita. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz. Escape: volver\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
                 txtPedido.Text = "Tenés que escribir sólo el óxido o anhidrido que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
@@ -62,7 +62,8 @@ namespace WPF_Estequeometría
 
             if (e.Key == Key.F2) //F2 cambia el átomo y la valencia a resolver
             {
-                atomoSeleccionadoParaElUsuario = new SumadorAtomos().elegirAtomoAleatorio();
+
+                atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
 
                 txtPedido.Text = "Tenés que escribir sólo el óxido o ahidrido que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
                 txtFormula.Text = "";
@@ -222,6 +223,12 @@ namespace WPF_Estequeometría
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            if (e.Key == Key.Delete)
+            {
+                Voz.hablarAsync("no se puede usar la tecla suprimir");
+                e.Handled = true;
+            }
+
             if (e.Key == Key.Back)
             {
                 swSeManejoElEventoEnWindow = true;
