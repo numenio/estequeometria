@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WPF_Estequeometría
 {
-    public enum tipoElemento {metal, nometal, oxigeno, noValido};
+    public enum tipoElemento {metal, nometal, oxigeno, hidrogeno, noValido};
     class Elemento
     {
         private string nombre = "";

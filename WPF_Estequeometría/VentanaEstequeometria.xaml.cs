@@ -24,42 +24,45 @@ namespace WPF_Estequeometría
         bool swSeManejoElEventoEnWindowKeyDown = false;
         List<int> listaPosicionesPermitidasParaBorrar = new List<int>();
         RandomizadorElementos ran = new RandomizadorElementos();
-
+        tipoMolécula tipoMolParaHacer;
 
         public VentanaEstequeometria(tipoMolécula t)
         {
             InitializeComponent();
 
+            tipoMolParaHacer = t;
 
-            string aux = "";
             atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
-            string formula = atomoSeleccionadoParaElUsuario.Simbolo;
-            if (new ValidadorCadenas().EsDiatomico(atomoSeleccionadoParaElUsuario))
-                formula += "2";
-
-            formula += "+O2=" + new SumadorAtomos(atomoSeleccionadoParaElUsuario).molFinal.CadenaMolécula;
-
-            switch (t)
-            {
-                case tipoMolécula.oxido:
-                    aux = "óxido o anhidrido";
-                    break;
-                case tipoMolécula.anhidrido:
-                    break;
-                case tipoMolécula.acido:
-                    break;
-                case tipoMolécula.hidroxido:
-                    break;
-                case tipoMolécula.sal:
-                    break;
-                case tipoMolécula.noValida:
-                    break;
-            }
+            
             txtInfo.Text = "Enter: Revisa la fórmula escrita. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz. Escape: volver\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
-            txtPedido.Text = "Tenés que hacer sólo la estequeometría del " + aux + " que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
-            txtFormula.Text = formula;
+            txtPedido.Text = "Tenés que hacer sólo la estequeometría del " + new ValidadorCadenas().tipoMoleculaTraducida(tipoMolParaHacer) + " que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
+            txtFormula.Text = hacerFormula(t);
             txtFormula.Focus();
             Voz.hablarAsync("En este ejercicio " + txtPedido.Text + ". La fórmula ya está escrita y no se puede borrar, sólo hay que hacer la estequeometría");
+        }
+
+        private string hacerFormula (tipoMolécula t)
+        {
+            string formula = "";
+
+            if (t == tipoMolécula.anhidrido || t == tipoMolécula.oxido)
+            {
+                formula = atomoSeleccionadoParaElUsuario.Simbolo;
+                if (new ValidadorCadenas().EsDiatomico(atomoSeleccionadoParaElUsuario))
+                    formula += "2";
+
+                formula += "+O2=" + new SumadorAtomos(atomoSeleccionadoParaElUsuario, tipoMolParaHacer).molFinal.CadenaMolécula;
+            }
+
+            if (t == tipoMolécula.acido)
+            {
+                Molecula oxido = new SumadorAtomos(atomoSeleccionadoParaElUsuario, tipoMolécula.oxido).molFinal;//se hace el oxido inicial
+                string agua = "H2O";
+                Molecula result = new SumadorAtomos(atomoSeleccionadoParaElUsuario, tipoMolécula.acido).molFinal;
+                formula = oxido.CadenaMolécula + "+" + agua + "=" + result.CadenaMolécula;
+            }
+
+            return formula;
         }
 
         private bool esPosicionPermitida (List<int> lista, int posParaChequear)
@@ -215,87 +218,6 @@ namespace WPF_Estequeometría
                 this.Close();
                 return;
             }
-
-
-            //if (e.Key == Key.Enter)
-            //{
-            //    //ElementoEnUso atomo = new ElementoEnUso("Azufre", "S", 4, true);
-            //    Formula f = new Formula(txtFormula.Text.Trim());
-            //    bool swEscribioEstequeometria = false;
-
-            //    if (f.swEsFormulaValida)
-            //    {
-            //        foreach (Molecula m in f.atomosEnFormula)
-            //            if (m.CantidadMolécula != 1)
-            //                swEscribioEstequeometria = true;
-
-            //        if (f.molEnviadaenResult.CantidadMolécula != 1)
-            //            swEscribioEstequeometria = true;
-            //    }
-
-            //    int atomosAntecedentes = 0;
-            //    int atomosMoleculaFinal = 0;
-
-
-            //    foreach (Molecula mol in f.atomosEnFormula)
-            //        foreach (ElementoEnUso el in mol.ElementosMolécula)
-            //            atomosAntecedentes += mol.CantidadMolécula * el.CantAtomos;
-
-
-            //    foreach (ElementoEnUso el in f.molEnviadaenResult.ElementosMolécula)
-            //        atomosMoleculaFinal += f.molEnviadaenResult.CantidadMolécula * el.CantAtomos;
-
-            //    string cadena = "";
-            //    ComprobadorFormulaTotal compr = new ComprobadorFormulaTotal(f, atomoSeleccionadoParaElUsuario, tipoMolécula.oxido, true);
-
-            //    if (!swEscribioEstequeometria)
-            //    {
-            //        if (!compr.swFormulaBienHecha)
-            //            cadena = compr.cadenaError;
-            //            //cadena = "Error. Comprobá la estequeometría porque hay " + atomosAntecedentes + " átomos en la suma, pero hay " + atomosMoleculaFinal + " en el resultado";
-            //        else
-            //            cadena = "Todo está perfecto. Felicitaciones! Ahora podés apretar F2 para hacer un nuevo ejercicio.";
-            //    }
-            //    else
-            //    {
-
-
-            //        //if (atomosMoleculaFinal != atomosAntecedentes)
-            //        //    swHayError = true;
-            //        cadena = compr.cadenaError;
-            //        //cadena = "Error. Comprobá la estequeometría porque hay " + atomosAntecedentes + " átomos en la suma, pero hay " + atomosMoleculaFinal + " en el resultado"; 
-            //    }
-            //    txtResultado.Text = cadena;
-            //    Voz.hablarAsync(cadena);
-
-            //    swSeManejoElEventoEnWindowKeyDown = true;
-            //    return;
-            //}
-
-
-
-            //if (esNumero(e)) //si es un número se deja escribir, si es letra se cancela. Sólo funcionan los caracteres que están arriba
-            //{
-            //    int pos = txtFormula.SelectionStart;
-            //    if (!listaPosicionesPermitidasParaBorrar.Contains(pos))
-            //        listaPosicionesPermitidasParaBorrar.Add(pos);
-            //    List<int> aux = new List<int>();
-            //    listaPosicionesPermitidasParaBorrar.ForEach(p => aux.Add(p)); //se carga el auxiliar
-            //    foreach (int i in aux)
-            //    {
-            //        if (i > pos)
-            //        {
-            //            listaPosicionesPermitidasParaBorrar.Remove(i);
-            //            if (!listaPosicionesPermitidasParaBorrar.Contains(i))
-            //                listaPosicionesPermitidasParaBorrar.Add(i + 1);
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    Voz.hablarAsync("sólo se pueden escribir números. En este ejercicio sólo se practica la estequeometría");
-            //    e.Handled = true;
-            //}
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
@@ -317,14 +239,14 @@ namespace WPF_Estequeometría
             if (e.Key == Key.F2) //F2 cambia el átomo y la valencia a resolver
             {
                 atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
-                string formula = atomoSeleccionadoParaElUsuario.Simbolo;
-                if (new ValidadorCadenas().EsDiatomico(atomoSeleccionadoParaElUsuario))
-                    formula += "2";
+                //string formula = atomoSeleccionadoParaElUsuario.Simbolo;
+                //if (new ValidadorCadenas().EsDiatomico(atomoSeleccionadoParaElUsuario))
+                //    formula += "2";
                 
-                formula += "+O2=" + new SumadorAtomos(atomoSeleccionadoParaElUsuario).molFinal.CadenaMolécula;
+                //formula += "+O2=" + new SumadorAtomos(atomoSeleccionadoParaElUsuario, tipoMolParaHacer).molFinal.CadenaMolécula;
 
-                txtPedido.Text = "Tenés que hacer sólo la estequeometría del óxido o anhidrido que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
-                txtFormula.Text = formula;
+                txtPedido.Text = "Tenés que hacer sólo la estequeometría del " + new ValidadorCadenas().tipoMoleculaTraducida(tipoMolParaHacer) + " que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
+                txtFormula.Text = hacerFormula(tipoMolParaHacer);
                 txtResultado.Text = "";
                 txtFormula.Focus();
                 Voz.hablarAsync("Efe dos, Ejercicio nuevo: " + txtPedido.Text);
@@ -500,18 +422,17 @@ namespace WPF_Estequeometría
 
             if (e.Key == Key.Enter)
             {
-                //ElementoEnUso atomo = new ElementoEnUso("Azufre", "S", 4, true);
                 Formula f = new Formula(txtFormula.Text.Trim());
-                bool swEscribioEstequeometria = false;
+                //bool swEscribioEstequeometria = false;
 
                 if (f.swEsFormulaValida)
                 {
-                    foreach (Molecula m in f.atomosEnFormula)
-                        if (m.CantidadMolécula != 1)
-                            swEscribioEstequeometria = true;
+                //    foreach (Molecula m in f.atomosEnFormula)
+                //        if (m.CantidadMolécula != 1)
+                //            swEscribioEstequeometria = true;
 
-                    if (f.molEnviadaenResult.CantidadMolécula != 1)
-                        swEscribioEstequeometria = true;
+                //    if (f.molEnviadaenResult.CantidadMolécula != 1)
+                //        swEscribioEstequeometria = true;
 
 
                     int atomosAntecedentes = 0;
@@ -529,25 +450,21 @@ namespace WPF_Estequeometría
                 }
 
                 string cadena = "";
-                ComprobadorFormulaTotal compr = new ComprobadorFormulaTotal(f, atomoSeleccionadoParaElUsuario, tipoMolécula.oxido, true);
+                ComprobadorFormulaTotal compr = new ComprobadorFormulaTotal(f, atomoSeleccionadoParaElUsuario, tipoMolParaHacer, true);
 
-                if (swEscribioEstequeometria)
-                {
+                //if (swEscribioEstequeometria)
+                //{
                     if (!compr.swFormulaBienHecha)
                         cadena = compr.cadenaError;
                     //cadena = "Error. Comprobá la estequeometría porque hay " + atomosAntecedentes + " átomos en la suma, pero hay " + atomosMoleculaFinal + " en el resultado";
                     else
                         cadena = "Todo está perfecto. Felicitaciones! Ahora podés apretar F2 para hacer un nuevo ejercicio o ESCAPE para volver al menú inicial.";
-                }
-                else
-                {
+                //}
+                //else
+                //{
 
-
-                    //if (atomosMoleculaFinal != atomosAntecedentes)
-                    //    swHayError = true;
-                    cadena = compr.cadenaError;
-                    //cadena = "Error. Comprobá la estequeometría porque hay " + atomosAntecedentes + " átomos en la suma, pero hay " + atomosMoleculaFinal + " en el resultado"; 
-                }
+                //    cadena = compr.cadenaError;
+                //}
                 txtResultado.Text = cadena;
                 Voz.hablarAsync(cadena);
 

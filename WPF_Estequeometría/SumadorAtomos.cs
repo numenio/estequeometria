@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,8 +17,9 @@ namespace WPF_Estequeometría
         public Molecula molOriginal; //sin la simplificaci{on
         public Molecula molFinal; //con la simplificación
         public bool swTieneQSimplificar = false;
+        public tipoMolécula tipo;
 
-        public SumadorAtomos(ElementoEnUso e)
+        public SumadorAtomos(ElementoEnUso e, tipoMolécula t)
         {
             ele = e;
             primos.Add(2);
@@ -26,7 +28,35 @@ namespace WPF_Estequeometría
             primos.Add(7);
             primos.Add(11);
 
-            molOriginal = new Molecula(ele.Simbolo + oxigeno.CantAtomos + oxigeno.Simbolo + ele.CantAtomos);
+            tipo = t;
+
+            switch (tipo)
+            {
+                case tipoMolécula.oxido:
+                case tipoMolécula.anhidrido:
+                    molOriginal = new Molecula(ele.Simbolo + oxigeno.CantAtomos + oxigeno.Simbolo + ele.CantAtomos);
+                    break;
+                case tipoMolécula.acido:
+                    int cantH = 1; //si se escribe 0 en la fórmula es como si hubiera un hidrógeno
+                    if (ele.CantAtomos % 2 == 0) //si la valencia es par
+                        cantH = 2;
+
+                    int cantO = (cantH + ele.CantAtomos) / 2;
+
+                    if (cantH >= 1) 
+                        molOriginal = new Molecula("H" + cantH + ele.Simbolo + "O" + cantO);
+                    else
+                        molOriginal = new Molecula("H" + ele.Simbolo + "O" + cantO);
+                    break;
+                case tipoMolécula.hidroxido:
+                    molOriginal = new Molecula(ele.Simbolo + "(OH)" + ele.CantAtomos);
+                    break;
+                case tipoMolécula.sal:
+                    break;
+                case tipoMolécula.noValida:
+                    break;
+            }
+            
             molFinal = simplificarMolecula(molOriginal);
 
             registroSimplificación = cargarRegistroAccionesSimplificación();
@@ -140,6 +170,6 @@ namespace WPF_Estequeometría
             return listaSimplificada;
         }
 
-        
+
     }
 }

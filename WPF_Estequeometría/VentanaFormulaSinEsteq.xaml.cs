@@ -23,35 +23,22 @@ namespace WPF_Estequeometría
         List<string> voces = Voz.listarVocesPorIdioma("Español");
         bool swSeManejoElEventoEnWindowKeyDown = false;
         RandomizadorElementos ran = new RandomizadorElementos();
-
+        tipoMolécula tipoMolParaHacer;
 
         public VentanaFormulaSinEsteq(tipoMolécula t)
         {
             InitializeComponent();
 
-            string aux = "";
+            tipoMolParaHacer = t;
+
+            
             atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
 
-            switch (t)
-            {
-                case tipoMolécula.oxido:
-                    aux = "óxido o anhidrido";
-                    break;
-                case tipoMolécula.anhidrido:
-                    break;
-                case tipoMolécula.acido:
-                    break;
-                case tipoMolécula.hidroxido:
-                    break;
-                case tipoMolécula.sal:
-                    break;
-                case tipoMolécula.noValida:
-                    break;
-            }
+            
             txtInfo.Text = "Enter: Revisa la fórmula escrita. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz. Escape: volver\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
-            txtPedido.Text = "Tenés que escribir la fórmula sin estequeometría del " + aux + " que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
+            txtPedido.Text = "Tenés que escribir la fórmula sin estequeometría del " + new ValidadorCadenas().tipoMoleculaTraducida(tipoMolParaHacer) + " que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
             txtFormula.Focus();
-            Voz.hablarAsync("En este tipo de ejercicio " + txtPedido.Text + ". Sólo tenés que escribir los átomos que se suman, y el " + aux + " resultado");
+            Voz.hablarAsync("En este tipo de ejercicio " + txtPedido.Text + ". Sólo tenés que escribir los átomos que se suman, y el " + new ValidadorCadenas().tipoMoleculaTraducida(tipoMolParaHacer) + " resultado");
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
@@ -67,7 +54,7 @@ namespace WPF_Estequeometría
             {
                 atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
 
-                txtPedido.Text = "Tenés que escribir la fórmula sin estequeometría del óxido o ahidrido que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
+                txtPedido.Text = "Tenés que escribir la fórmula sin estequeometría del " + new ValidadorCadenas().tipoMoleculaTraducida(tipoMolParaHacer) + " que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
                 txtFormula.Text = "";
                 txtResultado.Text = "";
                 txtFormula.Focus();
@@ -196,8 +183,8 @@ namespace WPF_Estequeometría
                 string cadena = "";
                 if (!swEscribioEstequeometria)
                 {
-                    if (!new ComprobadorFormulaTotal(f, atomoSeleccionadoParaElUsuario, tipoMolécula.oxido, false).swFormulaBienHecha)
-                        cadena = new BuscadorErroresEnFormula(f.molEnviadaenResult, new SumadorAtomos(atomoSeleccionadoParaElUsuario).molFinal, f).cadenaExplicacionError;
+                    if (!new ComprobadorFormulaTotal(f, atomoSeleccionadoParaElUsuario, tipoMolParaHacer, false).swFormulaBienHecha)
+                        cadena = new BuscadorErroresEnFormula(f.molEnviadaenResult, new SumadorAtomos(atomoSeleccionadoParaElUsuario, tipoMolParaHacer).molFinal, f, atomoSeleccionadoParaElUsuario, tipoMolParaHacer).cadenaExplicacionError;
                     else
                         cadena = "Todo está perfecto. Felicitaciones! Ahora podés apretar F2 para hacer un nuevo ejercicio o ESCAPE para volver al menú inicial.";
                 }

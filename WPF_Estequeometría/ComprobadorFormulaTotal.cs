@@ -13,13 +13,13 @@ namespace WPF_Estequeometría
         public string cadenaError = "";
         public ComprobadorFormulaTotal(Formula f, ElementoEnUso e, tipoMolécula t, bool chequearEstequeometría)
         {
-            BuscadorErroresEnFormula b = new BuscadorErroresEnFormula(f.molEnviadaenResult, new SumadorAtomos(e).molFinal, f);
+            BuscadorErroresEnFormula b = new BuscadorErroresEnFormula(f.molEnviadaenResult, new SumadorAtomos(e, t).molFinal, f, e, t);
 
             if (f.swEsFormulaValida)
             {
                 if (!new ComprobadorAntecedentes(f, e, t).swAntecedentesBienEscritos) swFormulaBienHecha = false;
                 if (!new ComprobadorMoleculas(f.molEnviadaenResult, e, t).swMoleculaBienResulta) swFormulaBienHecha = false;
-                if (chequearEstequeometría)
+                if (chequearEstequeometría && swFormulaBienHecha)
                     if (b.chequearEstequeometria())
                     {
                         cadenaError = b.cadenaExplicacionError;

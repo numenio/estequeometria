@@ -9,6 +9,7 @@ namespace WPF_Estequeometría
     class ComprobadorAntecedentes
     {
         Formula formulaEnviada;
+        tipoMolécula tipoMolParaHacer;
         //Molecula moleculaResueltaEnApp;
         //SumadorAtomos sumador;
         public bool swAntecedentesBienEscritos = false;
@@ -16,20 +17,26 @@ namespace WPF_Estequeometría
         public ComprobadorAntecedentes(Formula f, ElementoEnUso e, tipoMolécula t)
         {
             formulaEnviada = f;
+            tipoMolParaHacer = t;
+            Molecula moleculaResueltaEnApp = new SumadorAtomos(e, tipoMolParaHacer).molFinal;
 
             switch (t)
             {
                 case tipoMolécula.oxido: //ya sea óxido o anhidrido se hace lo mismo
                 case tipoMolécula.anhidrido:
-                    Molecula moleculaResueltaEnApp = new SumadorAtomos(e).molFinal;
-
                     if (sonAntecedentesCorrectos(f, moleculaResueltaEnApp))
                         swAntecedentesBienEscritos = true;
                     else
                         swAntecedentesBienEscritos = false;
 
                     break;
-                case tipoMolécula.acido: //aquí iría el código para sumar comprobar ácidos
+                case tipoMolécula.acido: //aquí iría el código para sumar comprobar ácidos o hidróxidos
+                case tipoMolécula.hidroxido:
+                    if (sonAntecedentesCorrectosEnAcidoseHidroxidos(f, moleculaResueltaEnApp, e))
+                        swAntecedentesBienEscritos = true;
+                    else
+                        swAntecedentesBienEscritos = false;
+
                     break;
             }
         }
@@ -87,6 +94,33 @@ namespace WPF_Estequeometría
             }
 
             return swAntecedentesCorrectos;
+        }
+
+        private bool sonAntecedentesCorrectosEnAcidoseHidroxidos (Formula f, Molecula mResuletaEnApp, ElementoEnUso elementoPedidoEnApp)
+        {
+            bool swEstaBien = false;
+
+            try
+            {
+                Molecula oxido = new SumadorAtomos(elementoPedidoEnApp, tipoMolécula.oxido).molFinal;//se hace el oxido inicial
+                Molecula agua = new Molecula("H2O");
+                bool swHayOxido = false;
+                bool swHayAgua = false;
+                foreach (Molecula m in formulaEnviada.atomosEnFormula) //cada uno de las moleculas de los antecedentes
+                {
+                    if (m.CadenaMolécula == oxido.CadenaMolécula) swHayOxido = true; //si está el óxido
+                    if (m.CadenaMolécula == agua.CadenaMolécula) swHayAgua = true; //si está el agua
+                }
+
+                if (swHayAgua && swHayOxido)//si no están los dos elementos, hay error
+                    return true;               
+            }
+            catch
+            {
+                swEstaBien = false;
+            }
+
+            return swEstaBien;
         }
     }
 }

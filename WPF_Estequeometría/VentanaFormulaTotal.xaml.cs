@@ -23,6 +23,7 @@ namespace WPF_Estequeometría
         List<string> voces = Voz.listarVocesPorIdioma("Español");
         bool swSeManejoElEventoEnWindow = false;
         RandomizadorElementos ran = new RandomizadorElementos();
+        tipoMolécula tipoMolParaHacer;
 
 
         public VentanaFormulaTotal(tipoMolécula t)
@@ -30,6 +31,7 @@ namespace WPF_Estequeometría
             InitializeComponent();
             //ElementoEnUso atomo = new ElementoEnUso("Azufre", "S", 4, true);
             atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
+            tipoMolParaHacer = t;
 
             txtInfo.Text = "Enter: Revisa la fórmula escrita. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz. Escape: volver\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
             txtPedido.Text = "Tenés que usar el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString() + " para hacer la fórmula completa";
@@ -215,8 +217,8 @@ namespace WPF_Estequeometría
                 Formula f = new Formula(txtFormula.Text.Trim());
 
                 string cadena = "";
-                if (!new ComprobadorFormulaTotal(f, atomoSeleccionadoParaElUsuario, tipoMolécula.oxido, true).swFormulaBienHecha)
-                    cadena = new BuscadorErroresEnFormula(f.molEnviadaenResult, new SumadorAtomos(atomoSeleccionadoParaElUsuario).molFinal, f).cadenaExplicacionError;
+                if (!new ComprobadorFormulaTotal(f, atomoSeleccionadoParaElUsuario, tipoMolParaHacer, true).swFormulaBienHecha)
+                    cadena = new BuscadorErroresEnFormula(f.molEnviadaenResult, new SumadorAtomos(atomoSeleccionadoParaElUsuario, tipoMolParaHacer).molFinal, f, atomoSeleccionadoParaElUsuario, tipoMolParaHacer).cadenaExplicacionError;
                 else
                     cadena = "Todo está perfecto. Felicitaciones! Pudiste resolver el ejercicio más difícil. Ahora podés apretar F2 para hacer un ejercicio nuevo o ESCAPE para volver al menú inicial.";
 

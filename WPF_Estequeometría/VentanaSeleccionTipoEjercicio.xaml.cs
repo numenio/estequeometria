@@ -19,7 +19,7 @@ namespace WPF_Estequeometría
     /// </summary>
     public partial class VentanaSeleccionTipoEjercicio : Window
     {
-        tipoMolécula tipoMoleculaResultado = tipoMolécula.oxido;
+        tipoMolécula tipoMoleculaResultado = tipoMolécula.acido;
         //string aux = "";
 
         public bool swVolviendo { get; set; }
@@ -40,18 +40,24 @@ namespace WPF_Estequeometría
             List<string> listaEjercicios = new List<string>();
             switch (tipoMoleculaResultado)
             {
+                case tipoMolécula.anhidrido:
                 case tipoMolécula.oxido:
-                    //aux = "óxidos o anhidridos";
                     listaEjercicios.Add("Practicar sólo hacer óxidos o anhidridos");
                     listaEjercicios.Add("Practicar escribir una fórmula sin estequeometría");
                     listaEjercicios.Add("Practicar sólo la estequeometría de una fórmula");
                     listaEjercicios.Add("Practicar una fórmula completa, incluyendo la estequeometría");
                     break;
-                case tipoMolécula.anhidrido:
-                    break;
                 case tipoMolécula.acido:
+                    listaEjercicios.Add("Practicar sólo hacer ácidos");
+                    listaEjercicios.Add("Practicar escribir una fórmula de un ácido sin estequeometría");
+                    listaEjercicios.Add("Practicar sólo la estequeometría de un ácido de una fórmula");
+                    listaEjercicios.Add("Practicar una fórmula completa de un ácido, incluyendo la estequeometría");
                     break;
                 case tipoMolécula.hidroxido:
+                    listaEjercicios.Add("Practicar sólo hacer hidróxidos");
+                    listaEjercicios.Add("Practicar escribir una fórmula de un hidróxido sin estequeometría");
+                    listaEjercicios.Add("Practicar sólo la estequeometría de un hidróxido de una fórmula");
+                    listaEjercicios.Add("Practicar una fórmula completa de un hidróxido, incluyendo la estequeometría");
                     break;
                 case tipoMolécula.sal:
                     break;
@@ -141,7 +147,7 @@ namespace WPF_Estequeometría
             if (swVolviendo)
                 Voz.hablarAsync("Volviendo a la lista de ejercicios. Elegí con flecha abajo qué tipo querés hacer y aceptá con enter");
             else
-                Voz.hablarAsync("Bienvenida o bienvenido a este programa para practicar óxidos y anhidridos. Elegí con las flechas y aceptá con enter el tipo de ejercicio de que querés hacer");
+                Voz.hablarAsync("Bienvenida o bienvenido a este programa de fórmulas químicas. Elegí con las flechas y aceptá con enter el tipo de ejercicio de que querés hacer");
         }
     }
 }

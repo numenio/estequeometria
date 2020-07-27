@@ -103,6 +103,14 @@ namespace WPF_Estequeometría
                 }
 
                 bool swEsElemVálido = false;
+
+                if (cadenaSimbolo == "H") //si es oxígeno
+                {
+                    cadenaNombre = "Hidrógeno";
+                    swEsElemVálido = true;
+                    t = tipoElemento.hidrogeno;
+                }
+
                 if (cadenaSimbolo == "O") //si es oxígeno
                 {
                     cadenaNombre = "Oxígeno";
@@ -140,6 +148,8 @@ namespace WPF_Estequeometría
                     }
                 }
 
+                if (cantAtomos == 0) cantAtomos = 1;
+
                 ElementoEnUso el = new ElementoEnUso(cadenaNombre, cadenaSimbolo, cantAtomos, swEsElemVálido);
                 el.TipodeAtomo = t; //se le carga la propiedad si es metal o no metal
                 elementos.Add(el);
@@ -174,8 +184,11 @@ namespace WPF_Estequeometría
                         }
                     }
                     break;
+                case 3:
+                    //hacer nombre cuando son ácidos o anhidridos
+                    break;
                 default:
-                    return "Error. Por ahora este programa sólo puede trabajar con dos átomos a la vez en óxidos y anhidridos";
+                    return "Error. Por ahora este programa sólo puede trabajar máximo con tres átomos a la vez";
             }
 
             return strNombreFormula;
@@ -186,16 +199,28 @@ namespace WPF_Estequeometría
             string cadenaOrdenada = "";
             foreach (ElementoEnUso e in elementosDeLaFormula)
             {
-                if (e.SwEsValido && e.TipodeAtomo == tipoElemento.oxigeno)
+                if (e.TipodeAtomo == tipoElemento.oxigeno)
+                {
                     if (e.CantAtomos > 1)
                         cadenaOrdenada += e.Simbolo + e.CantAtomos.ToString();
                     else
                         cadenaOrdenada += e.Simbolo;
-                else
+                }
+                else if (e.TipodeAtomo == tipoElemento.hidrogeno)
+                {
                     if (e.CantAtomos > 1)
-                    cadenaOrdenada = e.Simbolo + e.CantAtomos.ToString() + cadenaOrdenada;
+                        cadenaOrdenada = e.Simbolo + e.CantAtomos.ToString() + cadenaOrdenada;
+                    else
+                        cadenaOrdenada = e.Simbolo + cadenaOrdenada;
+                }
                 else
-                    cadenaOrdenada = e.Simbolo + cadenaOrdenada;
+                {
+                    if (e.CantAtomos > 1)
+                        cadenaOrdenada = e.Simbolo + e.CantAtomos.ToString() + cadenaOrdenada;
+                    else
+                        cadenaOrdenada = e.Simbolo + cadenaOrdenada;
+                    
+                }
             }
 
             return cadenaOrdenada;
@@ -278,6 +303,13 @@ namespace WPF_Estequeometría
                     }
 
                     bool swEsElemVálido = false;
+                    if (cadenaSimbolo == "H") //si es oxígeno
+                    {
+                        cadenaNombre = "Hidrógeno";
+                        swEsElemVálido = true;
+                        t = tipoElemento.hidrogeno;
+                    }
+
                     if (cadenaSimbolo == "O") //si es oxígeno
                     {
                         cadenaNombre = "Oxígeno";

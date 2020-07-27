@@ -80,6 +80,31 @@ namespace WPF_Estequeometría
             return String.Concat(cadenaParaOrdenar.OrderBy(c => c));
         }
 
+        public string tipoMoleculaTraducida (tipoMolécula t)
+        {
+            string cadena = "";
+            switch (t)
+            {
+                case tipoMolécula.oxido:
+                    cadena = "óxido o anhidrido";
+                    break;
+                case tipoMolécula.anhidrido:
+                    cadena = "óxido o anhidrido";
+                    break;
+                case tipoMolécula.acido:
+                    cadena = "ácido";
+                    break;
+                case tipoMolécula.hidroxido:
+                    cadena = "hidróxido";
+                    break;
+                case tipoMolécula.sal:
+                    break;
+                case tipoMolécula.noValida:
+                    break;
+            }
+            return cadena;
+        }
+
         public bool EsDiatomico(ElementoEnUso el)
         {
             

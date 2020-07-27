@@ -23,19 +23,22 @@ namespace WPF_Estequeometría
         List<string> voces = Voz.listarVocesPorIdioma("Español");
         bool swSeManejoElEventoEnWindow = false;
         RandomizadorElementos ran = new RandomizadorElementos();
+        tipoMolécula tipoMolParaHacer;
 
         public VentanaSoloResultado(tipoMolécula t)
         {
             InitializeComponent();
+
+            tipoMolParaHacer = t;
 
             try
             {
                 atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
 
                 txtInfo.Text = "Enter: Revisa la fórmula escrita. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz. Escape: volver\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
-                txtPedido.Text = "Tenés que escribir sólo el óxido o anhidrido que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
+                txtPedido.Text = "Tenés que escribir sólo el " +  new ValidadorCadenas().tipoMoleculaTraducida(tipoMolParaHacer) + " que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
                 txtFormula.Focus();
-                Voz.hablarAsync(txtPedido.Text + ". En este ejercicio no tenés que escribir los átomos que se suman, sólo el óxido o anhidrido resultado");
+                Voz.hablarAsync(txtPedido.Text + ". En este ejercicio no tenés que escribir los átomos que se suman, sólo el " + new ValidadorCadenas().tipoMoleculaTraducida(tipoMolParaHacer) + " resultado");
             } 
             catch (Exception ex)
             {
@@ -65,7 +68,7 @@ namespace WPF_Estequeometría
 
                 atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
 
-                txtPedido.Text = "Tenés que escribir sólo el óxido o ahidrido que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
+                txtPedido.Text = "Tenés que escribir sólo el " + new ValidadorCadenas().tipoMoleculaTraducida(tipoMolParaHacer) + " que se forma usando el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString();
                 txtFormula.Text = "";
                 txtResultado.Text = "";
                 Voz.hablarAsync("Efe dos, Ejercicio nuevo: " + txtPedido.Text);
@@ -163,63 +166,6 @@ namespace WPF_Estequeometría
 
         }
 
-        private void txtFormula_KeyDown(object sender, KeyEventArgs e)
-        {
-            //if (e.Key == Key.Back)
-            //{
-            //    int pos = txtFormula.SelectionStart;
-            //    pos--;
-            //    if (pos < 0) pos = 0;
-            //    if (txtFormula.Text.Length != 0)
-            //        Voz.hablarAsync("Borrando " + new ValidadorCadenas().traducirCadenaParaLeer(txtFormula.Text[pos].ToString(), true));
-            //    else
-            //        Voz.hablarAsync("Borraste todo");
-
-            //    return;
-            //}
-        }
-
-        private void Window_KeyDown(object sender, KeyEventArgs e)
-        {
-            //if (e.Key == Key.Enter)
-            //{
-            //    swSeManejoElEventoEnWindow = true;
-            //    string cadena = "";
-            //    //Formula f = new Formula(txtFormula.Text.Trim());
-            //    if (new Molecula().esCadenaDeMoleculaValida(txtFormula.Text))
-            //    {
-            //        Molecula m = new Molecula(txtFormula.Text);
-            //        ComprobadorMoleculas c = new ComprobadorMoleculas(m, atomoSeleccionadoParaElUsuario, tipoMolécula.oxido);
-
-                    
-            //        if (!c.swMoleculaBienResulta)
-            //            cadena = "Error. Revisá la molécula que escribiste. Recordá que apretando F1 se lee de nuevo el ejercicio a realizar.";
-            //        else
-            //            cadena = "Todo está perfecto. Felicitaciones! Ahora podés apretar F2 para hacer un nuevo ejercicio.";
-            //    }
-            //    else
-            //    {
-            //        cadena = "Error. Revisá la molécula que escribiste. Recordá que apretando F1 se lee de nuevo el ejercicio a realizar.";
-            //    }
-            //    txtResultado.Text = cadena;
-            //    Voz.hablarAsync(cadena);
-            //    return;
-            //}
-
-            //if (e.Key == Key.Back)
-            //{
-            //    swSeManejoElEventoEnWindow = true;
-            //    int pos = txtFormula.SelectionStart;
-            //    pos--;
-            //    if (pos < 0) pos = 0;
-            //    if (txtFormula.Text.Length != 0)
-            //        Voz.hablarAsync("Borrando " + new ValidadorCadenas().traducirCadenaParaLeer(txtFormula.Text[pos].ToString(), true));
-            //    else
-            //        Voz.hablarAsync("Borraste todo");
-
-            //    return;
-            //}
-        }
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -254,12 +200,12 @@ namespace WPF_Estequeometría
                 if (new Molecula().esCadenaDeMoleculaValida(txtFormula.Text))
                 {
                     Molecula m = new Molecula(txtFormula.Text);
-                    ComprobadorMoleculas c = new ComprobadorMoleculas(m, atomoSeleccionadoParaElUsuario, tipoMolécula.oxido);
+                    ComprobadorMoleculas c = new ComprobadorMoleculas(m, atomoSeleccionadoParaElUsuario, tipoMolParaHacer);
 
 
                     if (!c.swMoleculaBienResulta)
                     {
-                        SumadorAtomos s = new SumadorAtomos(atomoSeleccionadoParaElUsuario);
+                        SumadorAtomos s = new SumadorAtomos(atomoSeleccionadoParaElUsuario, tipoMolParaHacer);
                         if (s.molOriginal.CadenaMolécula == new ValidadorCadenas().validarCadena(txtFormula.Text, false)) //si escribió bien la fórmula pero sólo le faltó simplificar
                             cadena = "Error, faltó simplificar. " + c.cadenaSimplificacion;
                         else
@@ -268,7 +214,7 @@ namespace WPF_Estequeometría
                     else
                     {
                         if (m.CantidadMolécula != 1)
-                            cadena = "Error. Escribiste un número antes del óxido o anhidrido. Este ejercicio es sólo para practicar el óxido o anhidrido final, no la estequeometría.";
+                            cadena = "Error. Escribiste un número antes del " + new ValidadorCadenas().tipoMoleculaTraducida(tipoMolParaHacer) + ". Este ejercicio es sólo para practicar la molécula final, no la estequeometría.";
                         else
                             cadena = "Todo está perfecto. Felicitaciones! Ahora podés apretar F2 para hacer un nuevo ejercicio o ESCAPE para volver al menú inicial.";
                     }
