@@ -1,16 +1,15 @@
-﻿<Window x:Class="WPF_Estequeometria.VentanaSeleccionTipoEjercicio"
+﻿<Window x:Class="WPF_Estequeometria.VentanaInicio"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_Estequeometria"
         mc:Ignorable="d"
-        Title="Química" Height="450" Width="800" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" Loaded="Window_Loaded" Icon="icono.jpg">
+        Title="Química" Height="450" Width="800" Icon="icono.jpg" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" Loaded="Window_Loaded">
     <Grid>
-        <ListBox x:Name="listEjercicios" HorizontalAlignment="Left" Height="219" Margin="47,58,0,0" VerticalAlignment="Top" Width="704" FontSize="20" MouseDoubleClick="listEjercicios_MouseDoubleClick"/>
+        <ListBox x:Name="listEjercicios" HorizontalAlignment="Left" Height="219" Margin="47,68,0,0" VerticalAlignment="Top" Width="704" FontSize="20" MouseDoubleClick="listEjercicios_MouseDoubleClick"/>
         <Label Content="Elegir tipo de ejercicio:" HorizontalAlignment="Left" Margin="220,18,0,0" VerticalAlignment="Top" FontSize="24"/>
         <Button Content="Empezar" HorizontalAlignment="Left" Margin="294,309,0,0" VerticalAlignment="Top" Width="213" Height="44" FontSize="24" Click="Button_Click"/>
         <TextBlock x:Name="txtInfo" HorizontalAlignment="Left" Margin="36,379,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="28" Width="709"/>
-
     </Grid>
 </Window>

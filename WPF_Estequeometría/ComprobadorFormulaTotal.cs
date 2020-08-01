@@ -5,7 +5,7 @@ using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPF_Estequeometría
+namespace WPF_Estequeometria
 {
     class ComprobadorFormulaTotal
     {

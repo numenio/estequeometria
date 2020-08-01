@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPF_Estequeometría
+namespace WPF_Estequeometria
 {
     class Formula
     {
@@ -13,14 +13,16 @@ namespace WPF_Estequeometría
         public List<Molecula> atomosEnFormula = new List<Molecula>(); //los antecedentes de la fórmula
         public Molecula molEnviadaenResult; //el resultado en la fórmula
         public bool swEsFormulaValida = false;
+        tipoMolécula tipoMoleculaPedida;
         
 
-        public Formula(string formulaEnviada)
+        public Formula(string formulaEnviada, tipoMolécula t)
         {
+            tipoMoleculaPedida = t;
             cadenaFormulaEnviada = formulaEnviada;
             cadenaFormulaMejorada = new ValidadorCadenas().quitarEspaciosEncadena(cadenaFormulaEnviada); //new ValidadorCadenas().validarCadena(cadenaFormulaEnviada, false);
             
-            if (esFormulaValida(cadenaFormulaMejorada))
+            if (esFormulaValida(cadenaFormulaMejorada, t))
             {
                 atomosEnFormula = separarAtomosenFormula(cadenaFormulaMejorada);
                 molEnviadaenResult = separarMolResultEnFormula(cadenaFormulaMejorada);
@@ -38,7 +40,7 @@ namespace WPF_Estequeometría
             List<string> listaElementos = aux.Split('+').ToList();
 
             foreach(string s in listaElementos)
-                listaAtomos.Add(new Molecula(s));
+                listaAtomos.Add(new Molecula(s, tipoMoleculaPedida));
 
             return listaAtomos;
         }
@@ -48,15 +50,15 @@ namespace WPF_Estequeometría
             string aux = formula.Substring(formula.IndexOf('=')+1).Trim();
             string auxcadenaFormula = "";
 
-            auxcadenaFormula = new ValidadorCadenas().validarCadena(aux, false); //se quitan todos los caracteres que no sean válidos
+            auxcadenaFormula = new ValidadorCadenas().validarCadena(aux, false, tipoMoleculaPedida); //se quitan todos los caracteres que no sean válidos
 
-            return new Molecula(auxcadenaFormula);
+            return new Molecula(auxcadenaFormula, tipoMoleculaPedida);
         }
 
-        private bool esFormulaValida (string formula) 
+        private bool esFormulaValida (string formula, tipoMolécula t) 
         {
             formula = new ValidadorCadenas().quitarEspaciosEncadena(formula);
-            if (new ValidadorCadenas().esCadenaValida(formula, false)) //si los caracteres son válidos
+            if (new ValidadorCadenas().esCadenaValida(formula, false, t)) //si los caracteres son válidos
                 if (formula.Contains('+')) //tiene dos elementos que se suman
                     if (formula.Contains('=')) //tiene un igual
                         if (formula.IndexOf('+') < formula.IndexOf('=')) //y el signo + está antes que el =

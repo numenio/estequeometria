@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace WPF_Estequeometría
+namespace WPF_Estequeometria
 {
     /// <summary>
     /// Lógica de interacción para VentanaFormulaTotal.xaml
@@ -22,7 +22,7 @@ namespace WPF_Estequeometría
         ElementoEnUso atomoSeleccionadoParaElUsuario;
         List<string> voces = Voz.listarVocesPorIdioma("Español");
         bool swSeManejoElEventoEnWindow = false;
-        RandomizadorElementos ran = new RandomizadorElementos();
+        RandomizadorElementos ran;// = new RandomizadorElementos();
         tipoMolécula tipoMolParaHacer;
 
 
@@ -32,57 +32,13 @@ namespace WPF_Estequeometría
             //ElementoEnUso atomo = new ElementoEnUso("Azufre", "S", 4, true);
             atomoSeleccionadoParaElUsuario = ran.elegirAtomoAleatorio();
             tipoMolParaHacer = t;
+            ran = new RandomizadorElementos(t);
 
-            txtInfo.Text = "Enter: Revisa la fórmula escrita. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz. Escape: volver\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
+            txtInfo.Text = "Enter: Revisa la fórmula escrita. Flecha arriba o abajo: leen lo escrito con y sin mayúsculas. F1: lee el ejercicio a realizar.F2: cambia el átomo para hacer una fórmula nueva. F5, F6 y F7 modifican la voz. Control: callar la voz. Escape: volver\nAutor: Guillermo Toscani (guillermo.toscani@gmail.com)";
             txtPedido.Text = "Tenés que usar el átomo:" + "\n" + atomoSeleccionadoParaElUsuario.Nombre + " con la valencia " + atomoSeleccionadoParaElUsuario.CantAtomos.ToString() + " para hacer la fórmula completa";
             txtFormula.Focus();
-            Voz.hablarAsync("Este es el ejercicio más difícil. Aquí " + txtPedido.Text + ". Acordate de poner los átomos que suman, el resultado, y la estequeometría");
+            Voz.hablarAsync("Aquí " + txtPedido.Text + ". Acordate de poner los átomos que suman, el resultado, y la estequiometría.  Para escuchar la ayuda, apretá efe tres");
 
-        }
-
-        //private void elegirAtomoAleatorio()
-        //{
-        //    ListaMetales listamet = new ListaMetales();
-        //    ListaNoMetales listanomet = new ListaNoMetales();
-        //    Random rnd = new Random();
-        //    int cantMetales = listamet.Metales.Count;
-        //    int cantNoMetales = listanomet.Nometales.Count;
-        //    Elemento el;
-        //    int valenciaAleatoria = 1;
-
-        //    int i = rnd.Next(cantMetales + cantNoMetales);
-
-        //    if (i >= cantMetales) //como se suman las listas de metales y no metales, si el número es superior al total de metales, quiere decir que es no metal
-        //    {
-        //        i -= cantMetales; //se resta la lista de los metales
-        //        el = listanomet.Nometales[i];
-        //    }
-        //    else
-        //    {
-        //        el = listamet.Metales[i];
-        //    }
-
-        //    i = rnd.Next(el.Valencias.Count);
-        //    valenciaAleatoria = int.Parse(el.Valencias[i]);
-
-        //    atomoSeleccionadoParaElUsuario = new ElementoEnUso(el.Nombre, el.Simbolo, valenciaAleatoria, true);
-
-        //}
-
-        private void txtFormula_KeyDown(object sender, KeyEventArgs e)
-        {
-            //if (e.Key == Key.Back)
-            //{
-            //    int pos = txtFormula.SelectionStart;
-            //    pos--;
-            //    if (pos < 0) pos = 0;
-            //    if (txtFormula.Text.Length != 0)
-            //        Voz.hablarAsync("Borrando " + new ValidadorCadenas().traducirCadenaParaLeer(txtFormula.Text[pos].ToString(), true));
-            //    else
-            //        Voz.hablarAsync("Borraste todo");
-
-            //    return;
-            //}
         }
 
         private void txtFormula_KeyUp(object sender, KeyEventArgs e)
@@ -107,10 +63,26 @@ namespace WPF_Estequeometría
                 return;
             }
 
-            if (e.Key == Key.Down) //flecha abajo lee lo que ya está escrito en el cuadro de texto
+            if (e.Key == Key.F3) //F3 lee la ayuda
+            {
+                Voz.hablarAsync("Efe tres, leer ayuda: " + txtInfo.Text);
+                return;
+            }
+
+            if (e.Key == Key.Up) //flecha arriba lee lo que ya está escrito en el cuadro de texto diciendo las mayúsculas
             {
                 if (txtFormula.Text.Trim() != "")
-                    Voz.hablarAsync(new ValidadorCadenas().separarCadenaconEspacios(txtFormula.Text));
+                    Voz.hablarAsync(new ValidadorCadenas().separarCadenaconEspacios(txtFormula.Text, true));
+                else
+                    Voz.hablarAsync("No hay nada escrito");
+
+                return;
+            }
+
+            if (e.Key == Key.Down) //flecha abajo lee lo que ya está escrito en el cuadro de texto sin decir las mayúsculas
+            {
+                if (txtFormula.Text.Trim() != "")
+                    Voz.hablarAsync(new ValidadorCadenas().separarCadenaconEspacios(txtFormula.Text, false));
                 else
                     Voz.hablarAsync("No hay nada escrito");
 
@@ -145,11 +117,9 @@ namespace WPF_Estequeometría
                 {
                     if (txtFormula.SelectionStart == 0) //si está al principio del cuadro
                         Voz.hablarAsync("Estás en el comienzo del cuadro para escribir tu ejercicio");
-                    //else if (txtFormula.SelectionStart == txtFormula.Text.Length)
-                    //    Voz.hablarAsync("")
                     else
                     {
-                        Voz.hablarAsync(new ValidadorCadenas().traducirCadenaParaLeer(txtFormula.Text[txtFormula.SelectionStart - 1].ToString(), true));
+                        Voz.hablarAsync(new ValidadorCadenas().traducirCadenaParaLeer(txtFormula.Text[txtFormula.SelectionStart - 1].ToString(), true, true));
                     }
                 }
                 return;
@@ -161,14 +131,11 @@ namespace WPF_Estequeometría
                     Voz.hablarAsync("No hay nada escrito");
                 else
                 {
-                    if (txtFormula.SelectionStart == txtFormula.Text.Length) //si está al principio del cuadro
-                        Voz.hablarAsync("Última letra: " + new ValidadorCadenas().traducirCadenaParaLeer(txtFormula.Text[txtFormula.SelectionStart - 1].ToString(), true));
-                    //else if (txtFormula.SelectionStart == txtFormula.Text.Length)
-                    //    Voz.hablarAsync("")
+                    if (txtFormula.SelectionStart == txtFormula.Text.Length) //si está al final del cuadro
+                        Voz.hablarAsync("Última letra: " + new ValidadorCadenas().traducirCadenaParaLeer(txtFormula.Text[txtFormula.SelectionStart - 1].ToString(), true, true));
                     else
                     {
-                        //if ()
-                        Voz.hablarAsync(new ValidadorCadenas().traducirCadenaParaLeer(txtFormula.Text[txtFormula.SelectionStart - 1].ToString(), true));
+                        Voz.hablarAsync(new ValidadorCadenas().traducirCadenaParaLeer(txtFormula.Text[txtFormula.SelectionStart - 1].ToString(), true, true));
                     }
                 }
                 return;
@@ -179,8 +146,15 @@ namespace WPF_Estequeometría
                 int pos = voces.IndexOf(Voz.vozActual());
                 if (pos >= voces.Count - 1) pos = -1;
                 pos++;
-                Voz.cambiarVoz(voces[pos]);
-                Voz.hablarAsync("elegiste mi voz para hablarte");
+                if (voces.Count > 1) //si más de una voz una sola 
+                {
+                    Voz.cambiarVoz(voces[pos]);
+                    Voz.hablarAsync("elegiste mi voz para hablarte");
+                }
+                else
+                    Voz.hablarAsync("hay una sola voz instalada en la computadora. Si quiere cambiarla por favor instale otra");
+
+
                 return;
             }
 
@@ -192,7 +166,7 @@ namespace WPF_Estequeometría
                 posCursor--;
                 if (posCursor < 0) posCursor = 0;
                 if (txtFormula.Text.Length != 0)
-                    Voz.hablarAsync(new ValidadorCadenas().traducirCadenaParaLeer(txtFormula.Text[posCursor].ToString(), true));
+                    Voz.hablarAsync(new ValidadorCadenas().traducirCadenaParaLeer(txtFormula.Text[posCursor].ToString(), true, true));
 
                 //return;
             }
@@ -204,7 +178,7 @@ namespace WPF_Estequeometría
         {
             if (e.Key == Key.Escape)
             {
-                VentanaSeleccionTipoEjercicio v = new VentanaSeleccionTipoEjercicio();
+                VentanaSeleccionTipoEjercicio v = new VentanaSeleccionTipoEjercicio(tipoMolParaHacer);
                 v.swVolviendo = true;
                 v.Show();
                 this.Close();
@@ -213,8 +187,7 @@ namespace WPF_Estequeometría
 
             if (e.Key == Key.Enter)
             {
-                //ElementoEnUso atomo = new ElementoEnUso("Azufre", "S", 4, true);
-                Formula f = new Formula(txtFormula.Text.Trim());
+                Formula f = new Formula(txtFormula.Text.Trim(), tipoMolParaHacer);
 
                 string cadena = "";
                 if (!new ComprobadorFormulaTotal(f, atomoSeleccionadoParaElUsuario, tipoMolParaHacer, true).swFormulaBienHecha)
@@ -244,7 +217,7 @@ namespace WPF_Estequeometría
                 pos--;
                 if (pos < 0) pos = 0;
                 if (txtFormula.Text.Length != 0)
-                    Voz.hablarAsync("Borrando " + new ValidadorCadenas().traducirCadenaParaLeer(txtFormula.Text[pos].ToString(), true));
+                    Voz.hablarAsync("Borrando " + new ValidadorCadenas().traducirCadenaParaLeer(txtFormula.Text[pos].ToString(), true, true));
                 else
                     Voz.hablarAsync("Borraste todo");
 

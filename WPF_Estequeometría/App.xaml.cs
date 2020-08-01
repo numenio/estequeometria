@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace WPF_Estequeometría
+namespace WPF_Estequeometria
 {
     /// <summary>
     /// Lógica de interacción para App.xaml

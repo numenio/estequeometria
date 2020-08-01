@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WPF_Estequeometría.Properties {
+namespace WPF_Estequeometria.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace WPF_Estequeometría.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("WPF_Estequeometría.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("WPF_Estequeometria.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,7 +62,7 @@ namespace WPF_Estequeometría.Properties {
         
         /// <summary>
         ///   Busca una cadena traducida similar a &lt;?xml version=&apos;1.0&apos; encoding=&apos;UTF-8&apos; standalone=&apos;yes&apos; ?&gt;
-        ///&lt;!--Archivo para el soft de práctica de estequeometría para ciegos--&gt;
+        ///&lt;!--Archivo para el soft de práctica de estequiometría para ciegos--&gt;
         ///&lt;elementos&gt;
         ///	&lt;metales&gt; 
         ///	  &lt;metal&gt;

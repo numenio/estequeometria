@@ -5,13 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 
-namespace WPF_Estequeometría
+namespace WPF_Estequeometria
 {
     class ValidadorCadenas
     {
-        public bool esCaracterValido(char c, bool swIncluirEspacios)
+        public bool esCaracterValido(char c, bool swIncluirEspacios, tipoMolécula t)
         {
             string caracteresValidos = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+=";
+            
+            if (t == tipoMolécula.hidroxido) caracteresValidos += "()";
+
             if (swIncluirEspacios)
                 caracteresValidos += " ";
             
@@ -22,23 +25,23 @@ namespace WPF_Estequeometría
             
         }
 
-        public bool esCadenaValida(string cadenaValida, bool swIncluirEspacios)
+        public bool esCadenaValida(string cadenaValida, bool swIncluirEspacios, tipoMolécula t)
         {
             //bool swEsCadenaValida = true;
 
             foreach (char c in cadenaValida) //se quitan todos los caracteres que no sean válidos
-                if (!new ValidadorCadenas().esCaracterValido(c, swIncluirEspacios))
+                if (!new ValidadorCadenas().esCaracterValido(c, swIncluirEspacios, t))
                     return false;
 
             return true;
         }
 
-        public string validarCadena (string cadenaAvalidar, bool swIncluirEspacios)
+        public string validarCadena (string cadenaAvalidar, bool swIncluirEspacios, tipoMolécula t)
         {
             string auxcadenaValidada = "";
 
             foreach (char c in cadenaAvalidar) //se quitan todos los caracteres que no sean válidos
-                if (new ValidadorCadenas().esCaracterValido(c, swIncluirEspacios))
+                if (new ValidadorCadenas().esCaracterValido(c, swIncluirEspacios, t))
                     auxcadenaValidada += c;
 
             return auxcadenaValidada;
@@ -123,17 +126,17 @@ namespace WPF_Estequeometría
             }
         }
 
-        public string separarCadenaconEspacios (string cadenaParaSeparar)
+        public string separarCadenaconEspacios (string cadenaParaSeparar, bool swLeerMayusculas)
         {
             string aux = "";
 
             foreach (char c in cadenaParaSeparar)
                 aux += c.ToString() + ' ';
 
-            return traducirCadenaParaLeer(aux, false);
+            return traducirCadenaParaLeer(aux, false, swLeerMayusculas);
         }
 
-        public string traducirCadenaParaLeer (string cadenaParaTraducir, bool swLeerEspacio)
+        public string traducirCadenaParaLeer (string cadenaParaTraducir, bool swLeerEspacio, bool swLeerMayusculas)
         {
             string aux = "";
             foreach (char c in cadenaParaTraducir)
@@ -148,8 +151,11 @@ namespace WPF_Estequeometría
                         aux += ' ';
                 }
 
-                if (esEnMayúscula(c))
-                    aux += " mayúsculas ";
+                if (swLeerMayusculas)
+                {
+                    if (esEnMayúscula(c))
+                        aux += " mayúsculas ";
+                }
             }
 
             return aux;
@@ -172,6 +178,12 @@ namespace WPF_Estequeometría
                     break;
                 case '}':
                     aux = "ciera llave";
+                    break;
+                case '(':
+                    aux = "abre paréntesis";
+                    break;
+                case ')':
+                    aux = "ciera paréntesis";
                     break;
                 case '¨':
                     aux = "diéresis";

@@ -12,29 +12,22 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace WPF_Estequeometría
+namespace WPF_Estequeometria
 {
     /// <summary>
     /// Lógica de interacción para VentanaSeleccionTipoEjercicio.xaml
     /// </summary>
     public partial class VentanaSeleccionTipoEjercicio : Window
     {
-        tipoMolécula tipoMoleculaResultado = tipoMolécula.acido;
-        //string aux = "";
+        tipoMolécula tipoMoleculaResultado;
 
         public bool swVolviendo { get; set; }
 
-        public VentanaSeleccionTipoEjercicio()
+        public VentanaSeleccionTipoEjercicio(tipoMolécula t)
         {
             InitializeComponent();
-            if (Voz.listarVocesPorIdioma("Español").Count <= 0) //si no hay voces en español instaladas
-            {
-                MessageBox.Show("Este programa necesita que en la computadora haya instalada una voz en Español, por favor instale una.", "Error");
-                this.Close();
-                return;
-            }
-
-            Voz.cambiarVoz(Voz.listarVocesPorIdioma("Español")[0]);
+            
+            tipoMoleculaResultado = t;
 
             txtInfo.Text = "Autor: Guillermo Tosccani (guillermo.toscani@gmail.com";
             List<string> listaEjercicios = new List<string>();
@@ -43,23 +36,27 @@ namespace WPF_Estequeometría
                 case tipoMolécula.anhidrido:
                 case tipoMolécula.oxido:
                     listaEjercicios.Add("Practicar sólo hacer óxidos o anhidridos");
-                    listaEjercicios.Add("Practicar escribir una fórmula sin estequeometría");
-                    listaEjercicios.Add("Practicar sólo la estequeometría de una fórmula");
-                    listaEjercicios.Add("Practicar una fórmula completa, incluyendo la estequeometría");
+                    listaEjercicios.Add("Practicar escribir una fórmula de un óxido sin estequiometría");
+                    listaEjercicios.Add("Practicar sólo la estequiometría de una fórmula de un óxido");
+                    listaEjercicios.Add("Practicar una fórmula completa de un óxido, incluyendo la estequiometría");
                     break;
                 case tipoMolécula.acido:
                     listaEjercicios.Add("Practicar sólo hacer ácidos");
-                    listaEjercicios.Add("Practicar escribir una fórmula de un ácido sin estequeometría");
-                    listaEjercicios.Add("Practicar sólo la estequeometría de un ácido de una fórmula");
-                    listaEjercicios.Add("Practicar una fórmula completa de un ácido, incluyendo la estequeometría");
+                    listaEjercicios.Add("Practicar escribir una fórmula de un ácido sin estequiometría");
+                    listaEjercicios.Add("Practicar sólo la estequiometría de una fórmula de un ácido");
+                    listaEjercicios.Add("Practicar una fórmula completa de un ácido, incluyendo la estequiometría");
                     break;
                 case tipoMolécula.hidroxido:
                     listaEjercicios.Add("Practicar sólo hacer hidróxidos");
-                    listaEjercicios.Add("Practicar escribir una fórmula de un hidróxido sin estequeometría");
-                    listaEjercicios.Add("Practicar sólo la estequeometría de un hidróxido de una fórmula");
-                    listaEjercicios.Add("Practicar una fórmula completa de un hidróxido, incluyendo la estequeometría");
+                    listaEjercicios.Add("Practicar escribir una fórmula de un hidróxido sin estequiometría");
+                    listaEjercicios.Add("Practicar sólo la estequiometría de una fórmula de un hidróxido");
+                    listaEjercicios.Add("Practicar una fórmula completa de un hidróxido, incluyendo la estequiometría");
                     break;
                 case tipoMolécula.sal:
+                    listaEjercicios.Add("Practicar sólo hacer sales");
+                    listaEjercicios.Add("Practicar escribir una fórmula de una sal sin estequiometría");
+                    listaEjercicios.Add("Practicar sólo la estequiometría de una fórmula de una sal");
+                    listaEjercicios.Add("Practicar una fórmula completa de una sal, incluyendo la estequiometría");
                     break;
                 case tipoMolécula.noValida:
                     break;
@@ -88,12 +85,12 @@ namespace WPF_Estequeometría
                         ventanaResult.Show();
                         this.Close();
                         break;
-                    case 1: //fórmula sin estequeometría
+                    case 1: //fórmula sin estequiometría
                         VentanaFormulaSinEsteq ventanaFormSin = new VentanaFormulaSinEsteq(tipoMoleculaResultado);
                         ventanaFormSin.Show();
                         this.Close();
                         break;
-                    case 2: //estequeometría
+                    case 2: //estequiometría
                         VentanaEstequeometria ventEsteq = new VentanaEstequeometria(tipoMoleculaResultado);
                         ventEsteq.Show();
                         this.Close();
@@ -110,7 +107,13 @@ namespace WPF_Estequeometría
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
-                Voz.hablarAsync("Estás en la pantalla de inicio. Usá las flechas y enter para elegir qué tipo de ejercicio hacer");
+            {
+                VentanaInicio v = new VentanaInicio();
+                v.swVolviendo = true;
+                v.Show();
+                this.Close();
+                return;
+            }
 
             if (e.Key == Key.Return)
             {
@@ -147,7 +150,7 @@ namespace WPF_Estequeometría
             if (swVolviendo)
                 Voz.hablarAsync("Volviendo a la lista de ejercicios. Elegí con flecha abajo qué tipo querés hacer y aceptá con enter");
             else
-                Voz.hablarAsync("Bienvenida o bienvenido a este programa de fórmulas químicas. Elegí con las flechas y aceptá con enter el tipo de ejercicio de que querés hacer");
+                Voz.hablarAsync("Abriendo la lista de ejercicios. Elegí con las flechas y aceptá con enter el tipo que querés hacer");
         }
     }
 }

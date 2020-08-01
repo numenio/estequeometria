@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{F49BC9A1-9565-443D-9ACB-54B1F80ACDAA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>WPF_Estequeometría</RootNamespace>
+    <RootNamespace>WPF_Estequeometria</RootNamespace>
     <AssemblyName>Formulas</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -74,6 +74,7 @@
     <Compile Include="ListaNoMetales.cs" />
     <Compile Include="Molecula.cs" />
     <Compile Include="Lector_elementos.cs" />
+    <Compile Include="MoleculaCompuesta.cs" />
     <Compile Include="RandomizadorElementos.cs" />
     <Compile Include="SumadorAtomos.cs" />
     <Compile Include="ValidadorCadenas.cs" />
@@ -85,6 +86,9 @@
     </Compile>
     <Compile Include="VentanaFormulaTotal.xaml.cs">
       <DependentUpon>VentanaFormulaTotal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VentanaInicio.xaml.cs">
+      <DependentUpon>VentanaInicio.xaml</DependentUpon>
     </Compile>
     <Compile Include="VentanaSeleccionTipoEjercicio.xaml.cs">
       <DependentUpon>VentanaSeleccionTipoEjercicio.xaml</DependentUpon>
@@ -106,6 +110,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="VentanaFormulaTotal.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VentanaInicio.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

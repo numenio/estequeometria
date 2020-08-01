@@ -8,18 +8,16 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Markup;
 
-namespace WPF_Estequeometría
+namespace WPF_Estequeometria
 {
-    public enum tipoMolécula { oxido, anhidrido, acido, hidroxido, sal, noValida };
+    public enum tipoMolécula { oxido, anhidrido, acido, hidroxido, sal, agua, oxidrilo, parteHidroxido, noValida };
     class Molecula
     {
         List<ElementoEnUso> elementosMolécula = new List<ElementoEnUso>();
-        tipoMolécula tipo = tipoMolécula.noValida;
+        tipoMolécula tipo;
         string nombre = "";
         string cadenaMoléculaOrdenada = "";
         int cantidadMolecula = 1;
-        //string cadenaMoléculaSinSimplificar = "";
-
 
         public List<ElementoEnUso> ElementosMolécula { get => elementosMolécula; }
         public tipoMolécula Tipo { get => tipo; }
@@ -27,18 +25,23 @@ namespace WPF_Estequeometría
         public string CadenaMolécula { get => cadenaMoléculaOrdenada; }
         public int CantidadMolécula { get => cantidadMolecula; }
 
-        //public string CadenaMoléculaOriginal { get => cadenaMoléculaSinSimplificar; }
 
-        //private bool esCaracterValido (char c)
-        //{
-        //    string caracteresValidos = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        //    if (caracteresValidos.Contains(c))
-        //        return true;
-        //    else
-        //        return false;
-        //}
 
-        private List<ElementoEnUso> separarElmentos(string cadenaFormula)
+
+        public Molecula(string cadenaFormula, tipoMolécula t)
+        {
+            tipo = t;
+            elementosMolécula = separarElmentos(cadenaFormula, t);
+            nombre = deducirNombreMolecula(elementosMolécula);
+            cadenaMoléculaOrdenada = ordenarCadenaMolécula(elementosMolécula);
+        }
+
+        public Molecula(tipoMolécula t)
+        {
+            tipo = t;
+        }
+
+        private List<ElementoEnUso> separarElmentos(string cadenaFormula, tipoMolécula t)
         {
             string auxcadena = "";
             string auxCantMol = "";
@@ -48,7 +51,7 @@ namespace WPF_Estequeometría
             foreach (char c in cadenaFormula.Trim())
             {
                 auxPos++;
-                if (new ValidadorCadenas().esCaracterValido(c, false))
+                if (new ValidadorCadenas().esCaracterValido(c, false, t))
                 {
 
                     if (char.IsUpper(c) && !swPrimerLetra)
@@ -56,7 +59,6 @@ namespace WPF_Estequeometría
                         //break;
                         auxElem.Add(auxcadena);
                         auxcadena = "";
-                        //auxcadena += c;
                     }
                     if (swPrimerLetra && char.IsDigit(c))
                     {
@@ -68,7 +70,7 @@ namespace WPF_Estequeometría
                     if (swPrimerLetra && !char.IsDigit(c) && !char.IsWhiteSpace(c))
                         swPrimerLetra = false;
 
-                    if (auxPos == cadenaFormula.Trim().Length)
+                    if (auxPos == cadenaFormula.Trim().Length || (t == tipoMolécula.oxidrilo && auxPos == cadenaFormula.Trim().Length - 1)) //si no es un oxidrilo se añade cuando es el último elemento, si es oxidrilo, se añade cuando sólo falta el paréntesis
                         auxElem.Add(auxcadena);
 
                     if (!swPrimerLetra) //si se alcanza la primer letra
@@ -87,9 +89,11 @@ namespace WPF_Estequeometría
                 //int cantMol = 1;
                 string cadenaSimbolo = elem;
                 string cadenaNombre = "";
-                tipoElemento t = tipoElemento.noValido;
+                tipoElemento tipoEl = tipoElemento.noValido;
                 //char num;
                 int cont = 0;
+
+                
 
                 foreach (char caract in elem)
                     if (char.IsDigit(caract))
@@ -108,14 +112,14 @@ namespace WPF_Estequeometría
                 {
                     cadenaNombre = "Hidrógeno";
                     swEsElemVálido = true;
-                    t = tipoElemento.hidrogeno;
+                    tipoEl = tipoElemento.hidrogeno;
                 }
 
                 if (cadenaSimbolo == "O") //si es oxígeno
                 {
                     cadenaNombre = "Oxígeno";
                     swEsElemVálido = true;
-                    t = tipoElemento.oxigeno;
+                    tipoEl = tipoElemento.oxigeno;
                 }
                 else
                 {
@@ -126,7 +130,7 @@ namespace WPF_Estequeometría
                         {
                             cadenaNombre = e.Nombre;
                             swEsElemVálido = true;
-                            t = tipoElemento.metal;
+                            tipoEl = tipoElemento.metal;
                             swEsMetal = true;
                             break;
                         }
@@ -141,7 +145,7 @@ namespace WPF_Estequeometría
                             {
                                 cadenaNombre = e.Nombre;
                                 swEsElemVálido = true;
-                                t = tipoElemento.nometal;
+                                tipoEl = tipoElemento.nometal;
                                 break;
                             }
                         }
@@ -151,7 +155,7 @@ namespace WPF_Estequeometría
                 if (cantAtomos == 0) cantAtomos = 1;
 
                 ElementoEnUso el = new ElementoEnUso(cadenaNombre, cadenaSimbolo, cantAtomos, swEsElemVálido);
-                el.TipodeAtomo = t; //se le carga la propiedad si es metal o no metal
+                el.TipodeAtomo = tipoEl; //se le carga la propiedad si es metal o no metal
                 elementos.Add(el);
             }
 
@@ -172,14 +176,14 @@ namespace WPF_Estequeometría
                         if (e.TipodeAtomo == tipoElemento.metal)
                         {
                             // <---------- hacer función que nombre bien cada compuesto según átomo y valencia
-                            tipo = tipoMolécula.oxido;
+                            //tipo = tipoMolécula.oxido;
                             return "óxido de " + e.Nombre;
                         }
 
                         if (e.TipodeAtomo == tipoElemento.nometal)
                         {
                             // <---------- hacer función que nombre bien cada compuesto según átomo y valencia
-                            tipo = tipoMolécula.anhidrido;
+                            //tipo = tipoMolécula.anhidrido;
                             return "anhidrido de " + e.Nombre;
                         }
                     }
@@ -201,17 +205,37 @@ namespace WPF_Estequeometría
             {
                 if (e.TipodeAtomo == tipoElemento.oxigeno)
                 {
-                    if (e.CantAtomos > 1)
-                        cadenaOrdenada += e.Simbolo + e.CantAtomos.ToString();
+                    if (tipo != tipoMolécula.oxidrilo)
+                    {
+                        if (e.CantAtomos > 1)
+                            cadenaOrdenada += e.Simbolo + e.CantAtomos.ToString();
+                        else
+                            cadenaOrdenada += e.Simbolo;
+                    }
                     else
-                        cadenaOrdenada += e.Simbolo;
+                    {
+                        if (e.CantAtomos > 1)
+                            cadenaOrdenada = e.Simbolo + e.CantAtomos.ToString() + cadenaOrdenada; //en oxidrilos que quede OH
+                        else
+                            cadenaOrdenada = e.Simbolo + cadenaOrdenada;
+                    }
                 }
                 else if (e.TipodeAtomo == tipoElemento.hidrogeno)
                 {
-                    if (e.CantAtomos > 1)
-                        cadenaOrdenada = e.Simbolo + e.CantAtomos.ToString() + cadenaOrdenada;
+                    if (tipo != tipoMolécula.oxidrilo)
+                    {
+                        if (e.CantAtomos > 1)
+                            cadenaOrdenada = e.Simbolo + e.CantAtomos.ToString() + cadenaOrdenada;
+                        else
+                            cadenaOrdenada = e.Simbolo + cadenaOrdenada;
+                    }
                     else
-                        cadenaOrdenada = e.Simbolo + cadenaOrdenada;
+                    {
+                        if (e.CantAtomos > 1)
+                            cadenaOrdenada += e.Simbolo + e.CantAtomos.ToString(); //en oxidrilos el H al final
+                        else
+                            cadenaOrdenada += e.Simbolo;
+                    }
                 }
                 else
                 {
@@ -219,7 +243,7 @@ namespace WPF_Estequeometría
                         cadenaOrdenada = e.Simbolo + e.CantAtomos.ToString() + cadenaOrdenada;
                     else
                         cadenaOrdenada = e.Simbolo + cadenaOrdenada;
-                    
+
                 }
             }
 
@@ -227,19 +251,7 @@ namespace WPF_Estequeometría
         }
 
 
-        public Molecula(string cadenaFormula)
-        {
-            elementosMolécula = separarElmentos(cadenaFormula);
-            nombre = deducirNombreMolecula(elementosMolécula);
-            cadenaMoléculaOrdenada = ordenarCadenaMolécula(elementosMolécula);
-        }
-
-        public Molecula()
-        {
-
-        }
-
-        public bool esCadenaDeMoleculaValida(string cadenaMolecula) //refactorizar
+        public bool esCadenaDeMoleculaValida(string cadenaMolecula, tipoMolécula tipoMol) //refactorizar
         {
             try
             {
@@ -250,7 +262,7 @@ namespace WPF_Estequeometría
                 foreach (char c in cadenaMolecula.Trim())
                 {
                     auxPos++;
-                    if (new ValidadorCadenas().esCaracterValido(c, false))
+                    if (new ValidadorCadenas().esCaracterValido(c, false, tipo))
                     {
 
                         if (char.IsUpper(c) && !swPrimerLetra)
@@ -350,6 +362,18 @@ namespace WPF_Estequeometría
                     ElementoEnUso el = new ElementoEnUso(cadenaNombre, cadenaSimbolo, cantAtomos, swEsElemVálido);
                     el.TipodeAtomo = t; //se le carga la propiedad si es metal o no metal
                     elementos.Add(el);
+
+                    
+                }
+
+                if (tipoMol == tipoMolécula.hidroxido)
+                {
+                    //int lugarPrimerParentesis = cadenaMolecula.IndexOf('(');
+                    //int lugarSegundoParentesis = cadenaMolecula.IndexOf(')');
+
+                    //if (lugarPrimerParentesis < 0 || lugarSegundoParentesis < 0) return false; //si no hay paréntesis en hidróxido, no es válida
+
+                    if (cadenaMolecula.IndexOf("OH") < 0) return false; //si no hay oxidrilo, no es hidróxido válido
                 }
                 return true;
             }

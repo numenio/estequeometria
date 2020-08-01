@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPF_Estequeometría
+namespace WPF_Estequeometria
 {
     public enum tipoElemento {metal, nometal, oxigeno, hidrogeno, noValido};
     class Elemento

@@ -4,28 +4,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPF_Estequeometría
+namespace WPF_Estequeometria
 {
     class RandomizadorElementos
     {
         ListaMetales listamet = new ListaMetales();
         ListaNoMetales listanomet = new ListaNoMetales();
         List<Elemento> listaUsables = new List<Elemento>();
+        tipoMolécula tipo;
         //ListaMetales listaMetYaUsados = new ListaMetales();
         //ListaNoMetales listaNoMetYaUsados = new ListaNoMetales();
 
-        public RandomizadorElementos()
+        public RandomizadorElementos(tipoMolécula t)
         {
-            cargarElementosEnUsables();
+            tipo = t;
+            cargarElementosEnUsables(t);
         }
 
-        private void cargarElementosEnUsables()
+        private void cargarElementosEnUsables(tipoMolécula t)
         {
-            foreach (Elemento el in listamet.Metales)
-                listaUsables.Add(el);
+            if (t != tipoMolécula.acido) //los metales se cargan en todos los tipos de mol menos en ácidos
+            {
+                foreach (Elemento el in listamet.Metales)
+                    listaUsables.Add(el);
+            }
 
-            foreach (Elemento el in listanomet.Nometales)
-                listaUsables.Add(el);
+            if (t != tipoMolécula.hidroxido) //los no metales se cargan en todos los tipos de mol menos en hidróxidos
+            {
+                foreach (Elemento el in listanomet.Nometales)
+                    listaUsables.Add(el);
+            }
         }
 
         public ElementoEnUso elegirAtomoAleatorio()
@@ -48,7 +56,7 @@ namespace WPF_Estequeometría
             
             listaUsables.Remove(el); //se quita de usables el elemento que se va a devolver
             if (listaUsables.Count <= 0) 
-                cargarElementosEnUsables(); //si salieron todos los elementos, se empieza de nuevo
+                cargarElementosEnUsables(tipo); //si salieron todos los elementos, se empieza de nuevo
 
             return ele;
         }

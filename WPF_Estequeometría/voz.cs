@@ -8,7 +8,7 @@ using System.Globalization;
 using System.Speech.Synthesis;
 using System.Data.SqlClient;
 
-namespace WPF_Estequeometría
+namespace WPF_Estequeometria
 {
     public class Voz
     {

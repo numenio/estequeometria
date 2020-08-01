@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPF_Estequeometría
+namespace WPF_Estequeometria
 {
     class ComprobadorMoleculas
     {
         Molecula moleculaEnviada;
         Molecula moleculaResueltaEnApp;
+        MoleculaCompuesta moleculaCompuestaEnviada;
+        MoleculaCompuesta moleculaCompuestaResueltaEnApp;
         SumadorAtomos sumador;
         tipoMolécula tipoMolParaHacer;
         public bool swMoleculaBienResulta = false;
@@ -43,6 +45,33 @@ namespace WPF_Estequeometría
                     break;
                 case tipoMolécula.acido: //aquí iría el código para sumar comprobar ácidos
                     swMoleculaBienResulta = comprobarAcidos(m, moleculaResueltaEnApp);
+                    break;
+            }
+        }
+
+        public ComprobadorMoleculas(MoleculaCompuesta m, ElementoEnUso e, tipoMolécula t) //hacer: revisar todo este constructor
+        {
+            moleculaCompuestaEnviada = m;
+            tipoMolParaHacer = t;
+
+            sumador = new SumadorAtomos(e, tipoMolParaHacer);
+            
+            moleculaCompuestaResueltaEnApp = sumador.molFinalCompuesta;
+
+            switch (t)
+            {
+                case tipoMolécula.hidroxido:
+                    if (moleculaCompuestaEnviada.cadenaMoléculaOrdenada == moleculaCompuestaResueltaEnApp.cadenaMoléculaOrdenada)
+                        swMoleculaBienResulta = true;
+                    else
+                    {
+                        //cadenaExplicaciónError = new BuscadorErroresEnFormula(moleculaEnviada, moleculaResueltaEnApp)
+                        swMoleculaBienResulta = false;
+                    }
+
+                    break;
+                case tipoMolécula.sal:
+                    //swMoleculaBienResulta = comprobarAcidos(m, moleculaResueltaEnApp);
                     break;
             }
         }

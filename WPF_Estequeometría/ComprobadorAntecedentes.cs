@@ -4,14 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPF_Estequeometría
+namespace WPF_Estequeometria
 {
     class ComprobadorAntecedentes
     {
         Formula formulaEnviada;
         tipoMolécula tipoMolParaHacer;
-        //Molecula moleculaResueltaEnApp;
-        //SumadorAtomos sumador;
         public bool swAntecedentesBienEscritos = false;
 
         public ComprobadorAntecedentes(Formula f, ElementoEnUso e, tipoMolécula t)
@@ -50,44 +48,31 @@ namespace WPF_Estequeometría
             {
                 foreach (ElementoEnUso el in m.ElementosMolécula)
                 {
-                    //foreach (ElementoEnUso ele in mol.ElementosMolécula)
-                    //{
-                        if (mol.ElementosMolécula[0].Simbolo == el.Simbolo)
+                    if (mol.ElementosMolécula[0].Simbolo == el.Simbolo)
+                    {
+                        if (new ValidadorCadenas().EsDiatomico(el))
                         {
-                            if (new ValidadorCadenas().EsDiatomico(el))
-                            //if (el.Simbolo == "O") //si el átomo es oxígeno, se chequea que esté escrito el subíndice 2
-                            {
-                                if (mol.ElementosMolécula[0].CantAtomos != 2)
-                                {
-                                    swAntecedentesCorrectos = false;
-                                    break;
-                                }
-                            }
-                            else
-                            {
-                                if (mol.ElementosMolécula[0].CantAtomos != 1) //si no es diatómico tiene que tener valencia 1
+                            if (mol.ElementosMolécula[0].CantAtomos != 2)
                             {
                                 swAntecedentesCorrectos = false;
                                 break;
                             }
                         }
-
-                        //if (el.Simbolo == "S") //si el átomo es oxígeno, se chequea que esté escrito el subíndice 2
-                        //{
-                        //    if (mol.ElementosMolécula[0].CantAtomos != 2)
-                        //    {
-                        //        swAntecedentesCorrectos = false;
-                        //        break;
-                        //    }
-                        //}
-
-
-                        swAntecedentesCorrectos = true; //si encuentra que el átomo está en las dos fórmulas, se deja de buscar
-                        break;
-                        }
                         else
+                        {
+                            if (mol.ElementosMolécula[0].CantAtomos != 1) //si no es diatómico tiene que tener valencia 1
+                        {
                             swAntecedentesCorrectos = false;
-                    //}
+                            break;
+                        }
+                    }
+
+                        
+                    swAntecedentesCorrectos = true; //si encuentra que el átomo está en las dos fórmulas, se deja de buscar
+                    break;
+                    }
+                    else
+                        swAntecedentesCorrectos = false;
                 }
 
                 if (!swAntecedentesCorrectos) break; //si tan solo un átomo no está en ambas formulas, se deja de buscar y se da por incorrecta
@@ -103,7 +88,7 @@ namespace WPF_Estequeometría
             try
             {
                 Molecula oxido = new SumadorAtomos(elementoPedidoEnApp, tipoMolécula.oxido).molFinal;//se hace el oxido inicial
-                Molecula agua = new Molecula("H2O");
+                Molecula agua = new Molecula("H2O", tipoMolécula.agua);
                 bool swHayOxido = false;
                 bool swHayAgua = false;
                 foreach (Molecula m in formulaEnviada.atomosEnFormula) //cada uno de las moleculas de los antecedentes

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace WPF_Estequeometría
+namespace WPF_Estequeometria
 {
     class Lector_elementos
     {

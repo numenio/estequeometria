@@ -6,7 +6,7 @@ using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPF_Estequeometría
+namespace WPF_Estequeometria
 {
     class SumadorAtomos
     {
@@ -16,6 +16,8 @@ namespace WPF_Estequeometría
         public string registroSimplificación = "";
         public Molecula molOriginal; //sin la simplificaci{on
         public Molecula molFinal; //con la simplificación
+        public MoleculaCompuesta molOriginalCompuesta; //para hidróxidos y anhidridos - sin la simplificación
+        public MoleculaCompuesta molFinalCompuesta; //para hidróxidos y anhidridos - con la simplificación
         public bool swTieneQSimplificar = false;
         public tipoMolécula tipo;
 
@@ -34,7 +36,7 @@ namespace WPF_Estequeometría
             {
                 case tipoMolécula.oxido:
                 case tipoMolécula.anhidrido:
-                    molOriginal = new Molecula(ele.Simbolo + oxigeno.CantAtomos + oxigeno.Simbolo + ele.CantAtomos);
+                    molOriginal = new Molecula(ele.Simbolo + oxigeno.CantAtomos + oxigeno.Simbolo + ele.CantAtomos, tipo);
                     break;
                 case tipoMolécula.acido:
                     int cantH = 1; //si se escribe 0 en la fórmula es como si hubiera un hidrógeno
@@ -44,22 +46,26 @@ namespace WPF_Estequeometría
                     int cantO = (cantH + ele.CantAtomos) / 2;
 
                     if (cantH >= 1) 
-                        molOriginal = new Molecula("H" + cantH + ele.Simbolo + "O" + cantO);
+                        molOriginal = new Molecula("H" + cantH + ele.Simbolo + "O" + cantO, tipo);
                     else
-                        molOriginal = new Molecula("H" + ele.Simbolo + "O" + cantO);
+                        molOriginal = new Molecula("H" + ele.Simbolo + "O" + cantO, tipo);
                     break;
                 case tipoMolécula.hidroxido:
-                    molOriginal = new Molecula(ele.Simbolo + "(OH)" + ele.CantAtomos);
+                    molOriginalCompuesta = new MoleculaCompuesta(ele.Simbolo + "(OH)" + ele.CantAtomos, tipo);
+                    molFinalCompuesta = molOriginalCompuesta;
                     break;
                 case tipoMolécula.sal:
                     break;
                 case tipoMolécula.noValida:
                     break;
             }
-            
-            molFinal = simplificarMolecula(molOriginal);
 
-            registroSimplificación = cargarRegistroAccionesSimplificación();
+            if (t != tipoMolécula.hidroxido)
+            {
+                molFinal = simplificarMolecula(molOriginal);
+
+                registroSimplificación = cargarRegistroAccionesSimplificación();
+            }
         }
 
         public SumadorAtomos()
@@ -120,7 +126,7 @@ namespace WPF_Estequeometría
                 cont++;
             }
 
-            return new Molecula(auxCadenaMolecula);
+            return new Molecula(auxCadenaMolecula, tipo);
         }
 
         private bool esMultiplo (int numero, int multiplo)

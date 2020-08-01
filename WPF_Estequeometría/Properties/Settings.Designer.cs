@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WPF_Estequeometría.Properties {
+namespace WPF_Estequeometria.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPF_Estequeometría
+namespace WPF_Estequeometria
 {
     enum tipoError
     {
@@ -31,7 +31,7 @@ namespace WPF_Estequeometría
             tipo = t;
             elementoPedidoEnApp = e;
             tipoErrorEnFormula = chequearTipoError();
-            if (tipoErrorEnFormula != tipoError.estequeometriaIncorrecta) //si es error de estequeometría lo cargamos en la misma función de esteq
+            if (tipoErrorEnFormula != tipoError.estequeometriaIncorrecta) //si es error de estequiometría lo cargamos en la misma función de esteq
                 cadenaExplicacionError = hacerCadenaDevolSegunError(tipoErrorEnFormula);
         }
 
@@ -46,7 +46,7 @@ namespace WPF_Estequeometría
 
         private tipoError chequearTipoError()
         {
-            if (chequearCaracteresNoPermitidos()) return tipoError.caracteresNoPermitidos;
+            if (chequearCaracteresNoPermitidos(tipo)) return tipoError.caracteresNoPermitidos;
             if (chequearFormulaIncompleta()) return tipoError.formulaIncompleta;
             if (chequearAtomosEnAntecedentes()) return tipoError.atomosIncorrectosEnAntecedentes;
             if (tipo == tipoMolécula.oxido || tipo == tipoMolécula.anhidrido)
@@ -96,7 +96,7 @@ namespace WPF_Estequeometría
                 if (tipo == tipoMolécula.acido)
                 {
                     Molecula oxido = new SumadorAtomos(elementoPedidoEnApp, tipoMolécula.oxido).molFinal;//se hace el oxido inicial
-                    Molecula agua = new Molecula("H2O");
+                    Molecula agua = new Molecula("H2O", tipoMolécula.agua);
                     bool swHayOxido = false;
                     bool swHayAgua = false;
                     foreach (Molecula m in formulaEnviada.atomosEnFormula) //cada uno de las moleculas de los antecedentes
@@ -196,7 +196,7 @@ namespace WPF_Estequeometría
             //El problema de esta función es que supone que los átomos en las moléculas que suman sólo están repetidos 1 vez, funciona para ácidos y óxidos
 
             //-------Se hace una lista de elementos en los antecedentes, sin repetirlos, y con las valencias
-            //-------multiplicadas por la cantidad de moléculas en la estequeometría
+            //-------multiplicadas por la cantidad de moléculas en la estequiometría
             foreach (Molecula mol in formulaEnviada.atomosEnFormula) //cada parte de los antecedentes
             { 
                 foreach (ElementoEnUso elAntec in mol.ElementosMolécula) //cada elementos de cada parte
@@ -241,7 +241,7 @@ namespace WPF_Estequeometría
                         if (elAntec.CantAtomos != mEnviadaxUsuario.CantidadMolécula * elRes.CantAtomos)
                         {
                             //int aux = mol.CantidadMolécula * elAntec.CantAtomos;
-                            cadenaExplicacionError = "Error en la estequeometría. Hay " + elAntec.CantAtomos;
+                            cadenaExplicacionError = "Error en la estequiometría. Hay " + elAntec.CantAtomos;
                             if (elAntec.CantAtomos == 1)
                                 cadenaExplicacionError += " átomo ";
                             else
@@ -347,10 +347,10 @@ namespace WPF_Estequeometría
             return swHayError;
         }
 
-        private bool chequearCaracteresNoPermitidos()
+        private bool chequearCaracteresNoPermitidos(tipoMolécula t)
         {
             bool swHayError = false;
-            if (!new ValidadorCadenas().esCadenaValida(new ValidadorCadenas().quitarEspaciosEncadena(formulaEnviada.cadenaFormulaEnviada), false))
+            if (!new ValidadorCadenas().esCadenaValida(new ValidadorCadenas().quitarEspaciosEncadena(formulaEnviada.cadenaFormulaEnviada), false, t))
                 swHayError = true;
 
             return swHayError;
@@ -379,7 +379,7 @@ namespace WPF_Estequeometría
                         cadena = "Escribiste mal las valencias de los átomos que estás sumando, acordate que el elemento metal o no metal va sin ningún subíndice excepto que sea diatómico, y a eso se le suma el oxígeno, al que siempre se le escribe subíndice 2 porque él sí es diatómico";
                         break;
                     case tipoError.estequeometriaIncorrecta:
-                        //cadena = "Está mal la estequeometría de la operación. La fórmula escrita está bien tanto en los átomos que se están sumando como en la molécula resultado, pero no está bien equilibrada";
+                        //cadena = "Está mal la estequiometría de la operación. La fórmula escrita está bien tanto en los átomos que se están sumando como en la molécula resultado, pero no está bien equilibrada";
                         break;
                     case tipoError.atomosIncorrectosEnResult:
                         cadena = "Escribiste mal los átomos en la molécula resultado. Recordá que apretando F1 se te lee el elemento que tenés que usar, y el oxígeno se escribe siempre";
@@ -420,7 +420,7 @@ namespace WPF_Estequeometría
                         cadena = "Escribiste mal las valencias de las moléculas que estás sumando, acordate que un ácido se forma sumando un anhidrido y agua";
                         break;
                     case tipoError.estequeometriaIncorrecta:
-                        //cadena = "Está mal la estequeometría de la operación. La fórmula escrita está bien tanto en los átomos que se están sumando como en la molécula resultado, pero no está bien equilibrada";
+                        //cadena = "Está mal la estequiometría de la operación. La fórmula escrita está bien tanto en los átomos que se están sumando como en la molécula resultado, pero no está bien equilibrada";
                         break;
                     case tipoError.atomosIncorrectosEnResult:
                         cadena = "Escribiste mal los átomos en la ácido resultado";
